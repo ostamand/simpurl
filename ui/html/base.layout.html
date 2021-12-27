@@ -1,0 +1,25 @@
+{{define "base"}}
+<!doctype html>
+<html lang="eng">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/static/styles.css">
+        <title>{{template "title" .}}</title>
+    </head>
+
+    <body>
+        <header>
+            <h1><a href="/">URL</a></h1>
+        </header>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+        <main>
+            {{template "main" .}}
+        </main>
+        <footer>
+            <p>ostamand<br>
+        </footer>
+    </body>
+</html>
+{{end}}

@@ -1,0 +1,9 @@
+ footer {
+    position:fixed;
+    bottom:0;
+    background-color: red;
+}
+
+body {
+    background-color: lightblue;
+  }
