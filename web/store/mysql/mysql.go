@@ -61,6 +61,7 @@ func (s storageSQL) SaveLink(l *store.LinkModel) error {
 func (s storageSQL) SaveUser(userName string, password string) error {
 	var hashedPassword []byte
 	var err error
+	// TODO move this
 	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), 8); err != nil {
 		return err
 	}
@@ -68,4 +69,18 @@ func (s storageSQL) SaveUser(userName string, password string) error {
 	defer stmt.Close()
 	_, err = stmt.Exec(userName, hashedPassword)
 	return err
+}
+
+func (s storageSQL) SaveSession(sesssion *store.SessionModel) error {
+	stmt, _ := s.db.Prepare("INSERT INTO sessions(user_id, token, created_at, expiry_at) values(?, ?, ?, ?)")
+	defer stmt.Close()
+	_, err := stmt.Exec(sesssion.UserID, sesssion.Token, sesssion.CreatedAt, sesssion.ExpiryAt)
+	return err
+}
+
+func (s storageSQL) GetByUsername(userName string) (*store.UserModel, error) {
+	query := "SELECT id, username, password FROM users WHERE username = ?"
+	user := &store.UserModel{}
+	err := s.db.QueryRow(query, userName).Scan(&user.ID, &user.Username, &user.Password)
+	return user, err
 }

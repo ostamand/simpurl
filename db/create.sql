@@ -18,3 +18,12 @@ CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY(id),
     CONSTRAINT UC_users UNIQUE(username)
 );
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    user_id INTEGER NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    expiry_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
+);
