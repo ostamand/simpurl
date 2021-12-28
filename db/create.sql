@@ -4,6 +4,7 @@ USE shorturl;
 
 CREATE TABLE IF NOT EXISTS links (
     id INTEGER NOT NULL AUTO_INCREMENT,
+    user_id INTEGER NOT NULL,
     symbol VARCHAR(255),
     url VARCHAR(4096),
     description VARCHAR(4096),
@@ -17,4 +18,13 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255),
     PRIMARY KEY(id),
     CONSTRAINT UC_users UNIQUE(username)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    user_id INTEGER NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    expiry_at DATETIME NOT NULL,
+    PRIMARY KEY(id)
 );
