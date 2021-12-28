@@ -20,9 +20,14 @@ func main() {
 	handler := Handler{storage: s}
 
 	http.HandleFunc("/", handler.redirect)
-	http.HandleFunc("/create", handler.create)
+
+	// user
 	http.HandleFunc("/signup", handler.signup)
 	http.HandleFunc("/signin", handler.signin)
+	http.HandleFunc("/signout", handler.signout)
+
+	// links
+	http.HandleFunc("/links", handler.links)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	http.Handle("/static/", http.StripPrefix("/static", fileServer))
