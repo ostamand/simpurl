@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ostamand/url/web/config"
+	ctl "github.com/ostamand/url/web/controller"
 	"github.com/ostamand/url/web/store/mysql"
 )
 
@@ -28,7 +29,8 @@ func main() {
 	http.HandleFunc("/signout", handler.signout)
 
 	// links
-	http.HandleFunc("/links", handler.links)
+	controller := ctl.LinkController{Storage: s}
+	http.HandleFunc("/links/create", controller.Create)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	http.Handle("/static/", http.StripPrefix("/static", fileServer))
