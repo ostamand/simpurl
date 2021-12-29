@@ -12,13 +12,17 @@ type LinkController struct {
 	Storage store.StorageService
 }
 
+func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
+
+}
+
 func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		u := user.GetFromSession(&c.Storage, req)
 		if u.Authenticated() {
 			data := CreateViewData(req, u)
-			ShowPage(w, data, "links.page.html")
+			ShowPage(w, data, "link.page.html")
 			return
 		} else {
 			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
@@ -41,7 +45,7 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 		// TODO check if symbol already associated
 		c.Storage.SaveLink(l)
 
-		url := notify.AddNotificationToURL("/links/create", notify.NotifyLinkCreated)
+		url := notify.AddNotificationToURL("/link/create", notify.NotifyLinkCreated)
 		http.Redirect(w, req, url, http.StatusSeeOther)
 	}
 }
