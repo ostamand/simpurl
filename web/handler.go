@@ -112,15 +112,25 @@ func (h Handler) home(w http.ResponseWriter, req *http.Request) {
 
 func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
 	url := req.URL.String()
+
 	if url == "/" {
 		h.home(w, req)
 		return
 	}
-	splits := strings.Split(req.URL.String(), "/")[1:]
+
+	u := user.GetFromSession(&h.storage, req)
+	if !u.Authenticated() {
+		url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
+		http.Redirect(w, req, url, http.StatusSeeOther)
+		return
+	}
+
+	splits := strings.Split(url, "/")[1:]
 	if len(splits) > 1 {
 		http.Error(w, "Bad request, expecting: /shorturl", http.StatusBadRequest)
 		return
 	}
+
 	symbol := splits[0]
 	if l, err := h.storage.FindBySymbol(symbol); err != nil {
 		log.Printf("error during redirect: %s", err)
