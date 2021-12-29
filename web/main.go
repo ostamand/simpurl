@@ -24,13 +24,14 @@ func main() {
 	http.HandleFunc("/home", handler.home)
 
 	// user
-	http.HandleFunc("/signup", handler.signup)
-	http.HandleFunc("/signin", handler.signin)
-	http.HandleFunc("/signout", handler.signout)
+	u := ctl.UserController{Storage: s}
+	http.HandleFunc("/signup", u.Signup)
+	http.HandleFunc("/signin", u.Signin)
+	http.HandleFunc("/signout", u.Signout)
 
 	// links
-	controller := ctl.LinkController{Storage: s}
-	http.HandleFunc("/links/create", controller.Create)
+	l := ctl.LinkController{Storage: s}
+	http.HandleFunc("/links/create", l.Create)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	http.Handle("/static/", http.StripPrefix("/static", fileServer))
