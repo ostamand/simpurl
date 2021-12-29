@@ -16,6 +16,8 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 
 COPY --from=builder /app/server /app/server
 
+COPY ./ui /ui
+
 ARG config_file 
 ENV CONFIG_FILE=${config_file}
 COPY ./${config_file} .
