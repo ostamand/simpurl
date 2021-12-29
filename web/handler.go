@@ -151,7 +151,8 @@ func (h Handler) links(w http.ResponseWriter, req *http.Request) {
 			showPage(w, data, "links.page.html")
 			return
 		} else {
-			http.Redirect(w, req, "/signin", http.StatusSeeOther)
+			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
+			http.Redirect(w, req, url, http.StatusSeeOther)
 		}
 	case http.MethodPost:
 		u := user.GetFromSession(&h.storage, req)

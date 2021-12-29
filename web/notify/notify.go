@@ -32,10 +32,10 @@ var AllNotifications = []Notification{
 
 var notificationToText = map[Notification]string{
 	NotifyNone:          "",
-	NotifySignedIn:      "Welcome! You successfully signed in",
-	NotifyLinkCreated:   "New link created successfully",
+	NotifySignedIn:      "Welcome! You successfully signed in.",
+	NotifyLinkCreated:   "New link created successfully.",
 	NotifyWrongPassword: "Your username or password is incorrect. Try again.",
-	NotifyNotSignedIn:   "You need to be signed to use this URL",
+	NotifyNotSignedIn:   "You need to be signed in.",
 }
 
 var intToNotification map[int]Notification
