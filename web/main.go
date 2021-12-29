@@ -20,6 +20,7 @@ func main() {
 	handler := Handler{storage: s}
 
 	http.HandleFunc("/", handler.redirect)
+	http.HandleFunc("/home", handler.home)
 
 	// user
 	http.HandleFunc("/signup", handler.signup)

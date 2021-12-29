@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/ostamand/url/web/notify"
 	"github.com/ostamand/url/web/store"
 	"github.com/ostamand/url/web/user"
 )
@@ -20,7 +21,11 @@ func showPage(w io.Writer, data interface{}, pages ...string) {
 	for i, p := range pages {
 		pages[i] = "ui/html/" + p
 	}
-	pages = append(pages, "ui/html/base.layout.html", "ui/html/logged.partial.html")
+	pages = append(pages,
+		"ui/html/base.layout.html",
+		"ui/html/logged.partial.html",
+		"ui/html/notify.partial.html",
+	)
 	tmpl := template.Must(template.ParseFiles(pages...))
 	tmpl.Execute(w, data)
 }
@@ -55,8 +60,8 @@ func (h Handler) signout(w http.ResponseWriter, req *http.Request) {
 func (h Handler) signin(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		// TODO shows signout if already logged in
-		showPage(w, nil, "signin.page.html")
+		data := CreateViewModel(req, nil)
+		showPage(w, data, "signin.page.html")
 	case http.MethodPost:
 		if err := req.ParseForm(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -69,8 +74,8 @@ func (h Handler) signin(w http.ResponseWriter, req *http.Request) {
 		// check password
 		u, err := user.VerifyPassword(&h.storage, username, password)
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			// TODO redirect to signin
+			url := notify.AddNotificationToURL("/signin", notify.NotifyWrongPassword)
+			http.Redirect(w, req, url, http.StatusSeeOther)
 			return
 		}
 
@@ -90,15 +95,25 @@ func (h Handler) signin(w http.ResponseWriter, req *http.Request) {
 		})
 
 		// go back to home for now
-		http.Redirect(w, req, "/", http.StatusSeeOther)
+		http.Redirect(
+			w,
+			req,
+			notify.AddNotificationToURL("/home", notify.NotifySignedIn),
+			http.StatusSeeOther,
+		)
 	}
 }
 
+func (h Handler) home(w http.ResponseWriter, req *http.Request) {
+	u := user.GetFromSession(&h.storage, req)
+	data := CreateViewModel(req, u)
+	showPage(w, data, "home.page.html")
+}
+
 func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
-	if req.URL.String() == "/" {
-		u := user.GetFromSession(&h.storage, req)
-		data := CreateViewModel(u)
-		showPage(w, data, "home.page.html")
+	url := req.URL.String()
+	if url == "/" {
+		h.home(w, req)
 		return
 	}
 	splits := strings.Split(req.URL.String(), "/")[1:]
@@ -122,7 +137,7 @@ func (h Handler) links(w http.ResponseWriter, req *http.Request) {
 	case http.MethodGet:
 		u := user.GetFromSession(&h.storage, req)
 		if u.Authenticated() {
-			data := CreateViewModel(u)
+			data := CreateViewModel(req, u)
 			showPage(w, data, "links.page.html")
 			return
 		} else {
@@ -140,9 +155,12 @@ func (h Handler) links(w http.ResponseWriter, req *http.Request) {
 			URL:         req.FormValue("url"),
 			Description: req.FormValue("description"),
 		}
+
 		// TODO check if URL already exists
 		// TODO check if symbol already associated
 		h.storage.SaveLink(l)
-		http.Redirect(w, req, "/links", http.StatusSeeOther)
+
+		url := notify.AddNotificationToURL("/links", notify.NotifyLinkCreated)
+		http.Redirect(w, req, url, http.StatusSeeOther)
 	}
 }
