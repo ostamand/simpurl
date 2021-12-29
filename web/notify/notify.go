@@ -14,6 +14,7 @@ const (
 	NotifySignedIn      Notification = 101
 	NotifyLinkCreated                = 102
 	NotifyWrongPassword              = 301
+	NotifyNotSignedIn                = 302
 )
 
 const (
@@ -26,14 +27,15 @@ const (
 
 var AllNotifications = []Notification{
 	NotifyNone, NotifySignedIn,
-	NotifyLinkCreated, NotifyWrongPassword,
+	NotifyLinkCreated, NotifyWrongPassword, NotifyNotSignedIn,
 }
 
 var notificationToText = map[Notification]string{
 	NotifyNone:          "",
 	NotifySignedIn:      "Welcome! You successfully signed in",
 	NotifyLinkCreated:   "New link created successfully",
-	NotifyWrongPassword: "Your username or password is incorrect. Try again",
+	NotifyWrongPassword: "Your username or password is incorrect. Try again.",
+	NotifyNotSignedIn:   "You need to be signed to use this URL",
 }
 
 var intToNotification map[int]Notification
