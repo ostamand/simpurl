@@ -9,7 +9,8 @@ import (
 )
 
 type UserController struct {
-	Storage store.StorageService
+	store.StorageService
+	User *user.UserHelper
 }
 
 func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
@@ -21,7 +22,7 @@ func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		err := c.Storage.SaveUser(req.FormValue("username"), req.FormValue("password"))
+		err := c.SaveUser(req.FormValue("username"), req.FormValue("password"))
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -54,7 +55,7 @@ func (c UserController) Signin(w http.ResponseWriter, req *http.Request) {
 		password := req.FormValue("password")
 
 		// check password
-		u, err := user.VerifyPassword(&c.Storage, username, password)
+		u, err := c.User.VerifyPassword(username, password)
 		if err != nil {
 			url := notify.AddNotificationToURL("/signin", notify.NotifyWrongPassword)
 			http.Redirect(w, req, url, http.StatusSeeOther)
@@ -62,7 +63,7 @@ func (c UserController) Signin(w http.ResponseWriter, req *http.Request) {
 		}
 
 		// create session token
-		session, err := user.CreateSession(&c.Storage, u)
+		session, err := c.User.CreateSession(u)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			// TODO redirect to signin
