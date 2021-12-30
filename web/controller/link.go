@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ostamand/url/web/notify"
@@ -17,6 +16,11 @@ func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		u := user.GetFromSession(&c.Storage, req)
+		if !u.Authenticated() {
+			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
+			http.Redirect(w, req, url, http.StatusSeeOther)
+			return
+		}
 		links, _ := c.Storage.GetAllLinks(u)
 		viewData := CreateViewData(req, u)
 		data := struct {
@@ -26,9 +30,6 @@ func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 			viewData,
 			links,
 		}
-
-		log.Println(data)
-
 		ShowPage(w, data, "link/list.page.html")
 	}
 }
@@ -37,14 +38,14 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		u := user.GetFromSession(&c.Storage, req)
-		if u.Authenticated() {
-			data := CreateViewData(req, u)
-			ShowPage(w, data, "link/create.page.html")
-			return
-		} else {
+		if !u.Authenticated() {
 			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
 			http.Redirect(w, req, url, http.StatusSeeOther)
+			return
 		}
+		data := CreateViewData(req, u)
+		ShowPage(w, data, "link/create.page.html")
+
 	case http.MethodPost:
 		u := user.GetFromSession(&c.Storage, req)
 		if err := req.ParseForm(); err != nil {
