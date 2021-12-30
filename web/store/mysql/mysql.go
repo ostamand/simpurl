@@ -69,6 +69,7 @@ func (s storageSQL) SaveUser(username string, password string) error {
 	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), 8); err != nil {
 		return err
 	}
+	// by default admin will be false
 	stmt, _ := s.db.Prepare("INSERT INTO users(username, password, created_at) VALUES(?, ?, ?)")
 	defer stmt.Close()
 	_, err = stmt.Exec(username, hashedPassword, time.Now())
@@ -86,9 +87,9 @@ func (s storageSQL) SaveSession(sesssion *store.SessionModel) error {
 }
 
 func (s storageSQL) GetByUsername(username string) (*store.UserModel, error) {
-	query := "SELECT id, username, password, created_at FROM users WHERE username = ?"
+	query := "SELECT id, username, password, admin, created_at FROM users WHERE username = ?"
 	u := &store.UserModel{}
-	err := s.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.Password, &u.CreatedAt)
+	err := s.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
 	if err != nil {
 		log.Println(err)
 	}
@@ -96,12 +97,12 @@ func (s storageSQL) GetByUsername(username string) (*store.UserModel, error) {
 }
 
 func (s storageSQL) GetUserBySession(token string) (*store.UserModel, error) {
-	query := `SELECT users.id, username, password, users.created_at from sessions 
+	query := `SELECT users.id, username, password, users.admin, users.created_at from sessions 
 	JOIN users ON sessions.user_id = users.id 
 	WHERE token = ? AND expiry_at > ? 
 	ORDER BY sessions.expiry_at DESC LIMIT 1`
 	u := &store.UserModel{}
-	err := s.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.Password, &u.CreatedAt)
+	err := s.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
 	if err != nil {
 		log.Println(err)
 	}

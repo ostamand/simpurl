@@ -35,6 +35,7 @@ type UserModel struct {
 	ID        int
 	Username  string
 	Password  string
+	Admin     bool
 	CreatedAt time.Time
 }
 
