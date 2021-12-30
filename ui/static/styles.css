@@ -4,9 +4,9 @@
    min-height: 100%;
 }
 
- main {
+main {
    padding-top: 2em;
- }
+}
 
 .btn-primary {
   background-color: #2B1773;
@@ -65,3 +65,26 @@
 .header {
   background: #2B1773
 }
+
+
+
+
+a.table-link:link, a.table-link:visited {
+  color:#85858b
+}
+
+a.table-link:hover {
+  color:#2B26BF
+}
+
+.row-condensed{
+  font-size: 14px;
+}
+
+.column-url{
+  max-width: 300px;
+}
+
+ 
+
+

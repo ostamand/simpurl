@@ -2,12 +2,14 @@ package store
 
 import "time"
 
+//TODO refactor this StorageService to include seperate subservices
 type StorageService interface {
 	SaveLink(l *LinkModel) error
-	SaveUser(userName string, password string) error
+	SaveUser(username string, password string) error
 	SaveSession(session *SessionModel) error
 	GetUserBySession(token string) (*UserModel, error)
-	GetByUsername(userName string) (*UserModel, error)
+	GetByUsername(username string) (*UserModel, error)
+	GetAllLinks(u *UserModel) (*[]LinkModel, error)
 	FindBySymbol(symbol string) (*LinkModel, error)
 	Close()
 }

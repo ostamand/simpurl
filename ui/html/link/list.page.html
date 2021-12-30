@@ -1,0 +1,25 @@
+{{template "base" .}}
+
+{{define "title"}}Links{{end}}
+
+{{define "main"}}
+
+<div class="container">
+<table class="table table-dark">
+    <tr>
+        <th>URL</th>
+        <th>Description</th>
+        <th>Symbol</th>
+    </tr>
+{{range $l := .Links}}
+    <tr class="row-condensed">
+        <th class="column-url"><div class="text-wrap"><a class="table-link" href={{$l.URL}}>{{$l.URL}}</a></div></th>
+        <th>{{$l.Description}}</th>
+        <th>{{$l.Symbol}}</th>
+    </tr>
+{{end}}
+
+</table>
+</div>
+
+{{end}}

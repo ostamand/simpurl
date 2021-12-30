@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/ostamand/url/web/notify"
@@ -13,7 +14,23 @@ type LinkController struct {
 }
 
 func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodGet:
+		u := user.GetFromSession(&c.Storage, req)
+		links, _ := c.Storage.GetAllLinks(u)
+		viewData := CreateViewData(req, u)
+		data := struct {
+			*ViewData
+			Links *[]store.LinkModel
+		}{
+			viewData,
+			links,
+		}
 
+		log.Println(data)
+
+		ShowPage(w, data, "link/list.page.html")
+	}
 }
 
 func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
@@ -22,7 +39,7 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 		u := user.GetFromSession(&c.Storage, req)
 		if u.Authenticated() {
 			data := CreateViewData(req, u)
-			ShowPage(w, data, "link.page.html")
+			ShowPage(w, data, "link/create.page.html")
 			return
 		} else {
 			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
