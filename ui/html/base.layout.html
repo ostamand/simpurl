@@ -31,10 +31,19 @@
     <header class="p-3 text-white header">
         <div class="container">
             <div class="d-flex align-items-center justify-content-center">
-                <a class="navbar-brand text-white" href="/">URL</a>
+                <a class="navbar-brand text-white" href="/">SimpURL</a>
                 <ul class="nav me-lg-auto ">
                     <li><a href="/" class="nav-link px-2 text-white">Home</a></li>
-                    <li><a href="/links" class="nav-link px-2 text-white">Links</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
+                            data-bs-toggle="dropdown">
+                            Links
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/link/create">Create</a></li>
+                            <li><a class="dropdown-item" href="/link">List</a></li>
+                        </ul>
+                    </li>
                     <li><a href="/tags" class="nav-link px-2 text-white">Tags</a></li>
                 </ul>
                 <div class="text-end">

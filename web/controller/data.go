@@ -1,4 +1,4 @@
-package main
+package controller
 
 import (
 	"net/http"
@@ -9,8 +9,8 @@ import (
 
 const SessionCookie = "session_token"
 
-func CreateViewModel(req *http.Request, u *store.UserModel) *ViewModel {
-	data := ViewModel{User: u}
+func CreateViewData(req *http.Request, u *store.UserModel) *ViewData {
+	data := ViewData{User: u}
 
 	// flag for user login
 	if u != nil && u.ID != 0 {
@@ -36,7 +36,7 @@ func CreateViewModel(req *http.Request, u *store.UserModel) *ViewModel {
 	return &data
 }
 
-type ViewModel struct {
+type ViewData struct {
 	LoggedIn      bool
 	User          *store.UserModel
 	StatusText    string

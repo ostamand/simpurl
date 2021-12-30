@@ -97,3 +97,22 @@ func (s storageSQL) GetUserBySession(token string) (*store.UserModel, error) {
 	err := s.db.QueryRow(query, token, time.Now()).Scan(&user.ID, &user.Username, &user.Password)
 	return user, err
 }
+
+func (s storageSQL) GetAllLinks(u *store.UserModel) (*[]store.LinkModel, error) {
+	var links []store.LinkModel
+
+	query := "SELECT id, symbol, url, description FROM links WHERE user_id = ?"
+
+	stmt, _ := s.db.Prepare(query)
+	defer stmt.Close()
+
+	rows, _ := stmt.Query(u.ID)
+	defer rows.Close()
+
+	for rows.Next() {
+		l := store.LinkModel{UserID: u.ID}
+		rows.Scan(&l.ID, &l.Symbol, &l.URL, &l.Description)
+		links = append(links, l)
+	}
+	return &links, rows.Err()
+}
