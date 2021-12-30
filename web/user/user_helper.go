@@ -18,14 +18,20 @@ type UserHelper struct {
 const SessionCookie = "session_token"
 const ExpirationDelay = time.Minute * 60 * 3
 
-func (h UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) bool {
+func (h UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) (*store.UserModel, bool) {
 	u := h.GetFromSession(req)
-	if !u.Authenticated() {
-		url := notify.AddNotificationToURL(redirect, notify.NotifyNotSignedIn)
+	adminOnly := h.AdminOnly && !u.Admin
+	if !u.Authenticated() || adminOnly {
+		var url string
+		if adminOnly {
+			url = notify.AddNotificationToURL(redirect, notify.NotifyInDev)
+		} else {
+			url = notify.AddNotificationToURL(redirect, notify.NotifyNotSignedIn)
+		}
 		http.Redirect(w, req, url, http.StatusSeeOther)
-		return false
+		return nil, false
 	}
-	return true
+	return u, true
 }
 
 func (h UserHelper) GetFromSession(req *http.Request) *store.UserModel {

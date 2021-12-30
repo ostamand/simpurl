@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	ctrl "github.com/ostamand/url/web/controller"
-	"github.com/ostamand/url/web/notify"
 	"github.com/ostamand/url/web/store"
 	"github.com/ostamand/url/web/user"
 )
@@ -18,9 +17,11 @@ type Handler struct {
 }
 
 func (h Handler) home(w http.ResponseWriter, req *http.Request) {
-	u := h.User.GetFromSession(req)
-	data := ctrl.CreateViewData(req, u)
-	ctrl.ShowPage(w, data, "home.page.html")
+	u, ok := h.User.HasAccess(w, req, "/signin")
+	if ok {
+		data := ctrl.CreateViewData(req, u)
+		ctrl.ShowPage(w, data, "home.page.html")
+	}
 }
 
 func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
@@ -31,10 +32,7 @@ func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	u := h.User.GetFromSession(req)
-	if !u.Authenticated() {
-		url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-		http.Redirect(w, req, url, http.StatusSeeOther)
+	if _, ok := h.User.HasAccess(w, req, "/signin"); !ok {
 		return
 	}
 

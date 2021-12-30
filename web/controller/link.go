@@ -16,10 +16,8 @@ type LinkController struct {
 func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		u := c.User.GetFromSession(req)
-		if !u.Authenticated() {
-			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-			http.Redirect(w, req, url, http.StatusSeeOther)
+		u, ok := c.User.HasAccess(w, req, "/signin")
+		if !ok {
 			return
 		}
 		links, _ := c.GetAllLinks(u)
@@ -38,10 +36,8 @@ func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		u := c.User.GetFromSession(req)
-		if !u.Authenticated() {
-			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-			http.Redirect(w, req, url, http.StatusSeeOther)
+		u, ok := c.User.HasAccess(w, req, "/login")
+		if !ok {
 			return
 		}
 		data := CreateViewData(req, u)
