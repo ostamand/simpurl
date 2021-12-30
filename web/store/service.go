@@ -18,8 +18,8 @@ type SessionModel struct {
 	ID        int
 	UserID    int
 	Token     string
-	CreatedAt time.Time
 	ExpiryAt  time.Time
+	CreatedAt time.Time
 }
 
 type LinkModel struct {
@@ -28,17 +28,16 @@ type LinkModel struct {
 	Symbol      string
 	URL         string
 	Description string
+	CreatedAt   time.Time
 }
 
 type UserModel struct {
-	ID       int
-	Username string
-	Password string
+	ID        int
+	Username  string
+	Password  string
+	CreatedAt time.Time
 }
 
 func (u UserModel) Authenticated() bool {
-	if u.ID != 0 {
-		return true
-	}
-	return false
+	return u.ID != 0
 }
