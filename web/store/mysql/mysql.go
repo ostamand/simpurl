@@ -20,7 +20,7 @@ type storageSQL struct {
 
 func InitializeSQL(params *config.ParamsDB) *storageSQL {
 	dataSourceName := fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s",
+		"%s:%s@(%s:%s)/%s?parseTime=true",
 		params.User, params.Pass, params.Addr, params.Port, params.Name,
 	)
 
@@ -66,11 +66,9 @@ func (s storageSQL) SaveUser(username string, password string) error {
 	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), 8); err != nil {
 		return err
 	}
-	log.Printf("usernam: %s password %s", username, hashedPassword)
 	stmt, _ := s.db.Prepare("INSERT INTO users(username, password, created_at) VALUES(?, ?, ?)")
 	defer stmt.Close()
 	_, err = stmt.Exec(username, hashedPassword, time.Now())
-	log.Println(err)
 	return err
 }
 
@@ -81,11 +79,14 @@ func (s storageSQL) SaveSession(sesssion *store.SessionModel) error {
 	return err
 }
 
-func (s storageSQL) GetByUsername(userName string) (*store.UserModel, error) {
+func (s storageSQL) GetByUsername(username string) (*store.UserModel, error) {
 	query := "SELECT id, username, password, created_at FROM users WHERE username = ?"
-	user := &store.UserModel{}
-	err := s.db.QueryRow(query, userName).Scan(&user.ID, &user.Username, &user.Password, &user.CreatedAt)
-	return user, err
+	u := &store.UserModel{}
+	err := s.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.Password, &u.CreatedAt)
+	if err != nil {
+		log.Println(err)
+	}
+	return u, err
 }
 
 func (s storageSQL) GetUserBySession(token string) (*store.UserModel, error) {
