@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS links (
     symbol VARCHAR(255),
     url VARCHAR(4096),
     description VARCHAR(4096),
+    created_at DATETIME NOT NULL,
     PRIMARY KEY(id),
     CONSTRAINT UC_links UNIQUE (symbol)
 );
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255),
     password VARCHAR(255),
     PRIMARY KEY(id),
+    created_at DATETIME NOT NULL,
     CONSTRAINT UC_users UNIQUE(username)
 );
 
