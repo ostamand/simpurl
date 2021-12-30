@@ -9,19 +9,18 @@ import (
 )
 
 type LinkController struct {
-	Storage store.StorageService
+	store.StorageService
+	User *user.UserHelper
 }
 
 func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		u := user.GetFromSession(&c.Storage, req)
-		if !u.Authenticated() {
-			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-			http.Redirect(w, req, url, http.StatusSeeOther)
+		u, ok := c.User.HasAccess(w, req, "/signin")
+		if !ok {
 			return
 		}
-		links, _ := c.Storage.GetAllLinks(u)
+		links, _ := c.GetAllLinks(u)
 		viewData := CreateViewData(req, u)
 		data := struct {
 			*ViewData
@@ -37,17 +36,15 @@ func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		u := user.GetFromSession(&c.Storage, req)
-		if !u.Authenticated() {
-			url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-			http.Redirect(w, req, url, http.StatusSeeOther)
+		u, ok := c.User.HasAccess(w, req, "/login")
+		if !ok {
 			return
 		}
 		data := CreateViewData(req, u)
 		ShowPage(w, data, "link/create.page.html")
 
 	case http.MethodPost:
-		u := user.GetFromSession(&c.Storage, req)
+		u := c.User.GetFromSession(req)
 		if err := req.ParseForm(); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
@@ -61,7 +58,7 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 
 		// TODO check if URL already exists
 		// TODO check if symbol already associated
-		c.Storage.SaveLink(l)
+		c.SaveLink(l)
 
 		url := notify.AddNotificationToURL("/link/create", notify.NotifyLinkCreated)
 		http.Redirect(w, req, url, http.StatusSeeOther)

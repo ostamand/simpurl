@@ -11,7 +11,8 @@ type Status int
 
 const (
 	NotifyNone          Notification = 0
-	NotifySignedIn      Notification = 101
+	NotifyInDev         Notification = 1
+	NotifySignedIn                   = 101
 	NotifyLinkCreated                = 102
 	NotifyWrongPassword              = 301
 	NotifyNotSignedIn                = 302
@@ -26,12 +27,13 @@ const (
 )
 
 var AllNotifications = []Notification{
-	NotifyNone, NotifySignedIn,
+	NotifyNone, NotifyInDev, NotifySignedIn,
 	NotifyLinkCreated, NotifyWrongPassword, NotifyNotSignedIn,
 }
 
 var notificationToText = map[Notification]string{
 	NotifyNone:          "",
+	NotifyInDev:         "Currently in development. Please sign in as admin.", // add Learn More link
 	NotifySignedIn:      "Welcome! You successfully signed in.",
 	NotifyLinkCreated:   "New link created successfully.",
 	NotifyWrongPassword: "Your username or password is incorrect. Try again.",

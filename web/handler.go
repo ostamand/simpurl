@@ -7,19 +7,21 @@ import (
 	"strings"
 
 	ctrl "github.com/ostamand/url/web/controller"
-	"github.com/ostamand/url/web/notify"
 	"github.com/ostamand/url/web/store"
 	"github.com/ostamand/url/web/user"
 )
 
 type Handler struct {
-	storage store.StorageService
+	store.StorageService
+	User *user.UserHelper
 }
 
 func (h Handler) home(w http.ResponseWriter, req *http.Request) {
-	u := user.GetFromSession(&h.storage, req)
-	data := ctrl.CreateViewData(req, u)
-	ctrl.ShowPage(w, data, "home.page.html")
+	u, ok := h.User.HasAccess(w, req, "/signin")
+	if ok {
+		data := ctrl.CreateViewData(req, u)
+		ctrl.ShowPage(w, data, "home.page.html")
+	}
 }
 
 func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
@@ -30,10 +32,7 @@ func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	u := user.GetFromSession(&h.storage, req)
-	if !u.Authenticated() {
-		url := notify.AddNotificationToURL("/signin", notify.NotifyNotSignedIn)
-		http.Redirect(w, req, url, http.StatusSeeOther)
+	if _, ok := h.User.HasAccess(w, req, "/signin"); !ok {
 		return
 	}
 
@@ -44,7 +43,7 @@ func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
 	}
 
 	symbol := splits[0]
-	if l, err := h.storage.FindBySymbol(symbol); err != nil {
+	if l, err := h.FindBySymbol(symbol); err != nil {
 		log.Printf("error during redirect: %s", err)
 		text := fmt.Sprintf("Short URL not found: %s", symbol)
 		http.Error(w, text, http.StatusBadRequest)

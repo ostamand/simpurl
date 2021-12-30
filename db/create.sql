@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
     password VARCHAR(255),
+    admin BOOLEAN,
     PRIMARY KEY(id),
     created_at DATETIME NOT NULL,
     CONSTRAINT UC_users UNIQUE(username)

@@ -8,7 +8,12 @@ import (
 )
 
 type Params struct {
-	Db ParamsDB `json:"db"`
+	Db      ParamsDB  `json:"db"`
+	General GeneralDB `json:"general"`
+}
+
+type GeneralDB struct {
+	AdminOnly bool `json:"adminOnly"`
 }
 
 type ParamsDB struct {
