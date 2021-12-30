@@ -49,6 +49,9 @@ func (s storageSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
 	var l store.LinkModel
 	query := "SELECT id, symbol, url, description FROM links WHERE symbol = ?"
 	err := s.db.QueryRow(query, symbol).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description)
+	if err != nil {
+		log.Println(err)
+	}
 	return &l, err
 }
 
@@ -76,6 +79,9 @@ func (s storageSQL) SaveSession(sesssion *store.SessionModel) error {
 	stmt, _ := s.db.Prepare("INSERT INTO sessions(user_id, token, created_at, expiry_at) values(?, ?, ?, ?)")
 	defer stmt.Close()
 	_, err := stmt.Exec(sesssion.UserID, sesssion.Token, sesssion.CreatedAt, sesssion.ExpiryAt)
+	if err != nil {
+		log.Println(err)
+	}
 	return err
 }
 
@@ -90,12 +96,15 @@ func (s storageSQL) GetByUsername(username string) (*store.UserModel, error) {
 }
 
 func (s storageSQL) GetUserBySession(token string) (*store.UserModel, error) {
-	query := `SELECT users.id, username, password, created_at from sessions 
+	query := `SELECT users.id, username, password, users.created_at from sessions 
 	JOIN users ON sessions.user_id = users.id 
 	WHERE token = ? AND expiry_at > ? 
 	ORDER BY sessions.expiry_at DESC LIMIT 1`
 	u := &store.UserModel{}
 	err := s.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.Password, &u.CreatedAt)
+	if err != nil {
+		log.Println(err)
+	}
 	return u, err
 }
 
