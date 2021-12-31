@@ -23,5 +23,4 @@ server
 dev.sh
 prd.sh
 db/seed.sql
-config_dev.json
 config_prd.json

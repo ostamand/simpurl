@@ -1,0 +1,14 @@
+{
+    "db": {
+        "instance": "",
+        "socketDir": "",
+        "port": "3306",
+        "user": "root",
+        "pass": "",
+        "name": "shorturl",
+        "addr": "docker.for.mac.localhost"
+    }, 
+    "general": {
+        "adminOnly": true
+    }
+}
