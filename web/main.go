@@ -22,22 +22,22 @@ func main() {
 	// helpers
 	s := mysql.InitializeSQL(&params.Db)
 	userHelper := user.UserHelper{
-		AdminOnly:      params.General.AdminOnly,
-		StorageService: s,
+		AdminOnly: params.General.AdminOnly,
+		Storage:   s,
 	}
 
 	// main controller
 	h := Handler{
-		StorageService: s,
-		User:           &userHelper,
+		Storage: s,
+		User:    &userHelper,
 	}
 	http.HandleFunc("/", h.redirect)
 	http.HandleFunc("/home", h.home)
 
 	// user controller
 	u := ctrl.UserController{
-		StorageService: s,
-		User:           &userHelper,
+		Storage: s,
+		User:    &userHelper,
 	}
 	http.HandleFunc("/signup", u.Signup)
 	http.HandleFunc("/signin", u.Signin)
@@ -45,8 +45,8 @@ func main() {
 
 	// link controller
 	l := ctrl.LinkController{
-		StorageService: s,
-		User:           &userHelper,
+		Storage: s,
+		User:    &userHelper,
 	}
 	http.HandleFunc("/link/create", l.Create)
 	http.HandleFunc("/link", l.List)

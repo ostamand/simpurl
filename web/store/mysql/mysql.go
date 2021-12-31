@@ -4,9 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"time"
-
-	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -18,7 +15,11 @@ type storageSQL struct {
 	db *sql.DB
 }
 
-func InitializeSQL(params *config.ParamsDB) *storageSQL {
+func (s storageSQL) Close() {
+	s.db.Close()
+}
+
+func InitializeSQL(params *config.ParamsDB) *store.StorageService {
 	dataSourceName := fmt.Sprintf(
 		"%s:%s@(%s:%s)/%s?parseTime=true",
 		params.User, params.Pass, params.Addr, params.Port, params.Name,
@@ -38,92 +39,13 @@ func InitializeSQL(params *config.ParamsDB) *storageSQL {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &storageSQL{db}
-}
 
-func (s storageSQL) Close() {
-	s.db.Close()
-}
-
-func (s storageSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
-	var l store.LinkModel
-	query := "SELECT id, symbol, url, description FROM links WHERE symbol = ?"
-	err := s.db.QueryRow(query, symbol).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description)
-	if err != nil {
-		log.Println(err)
+	s := store.StorageService{
+		Link:    linkSQL{db},
+		User:    userSQL{db},
+		Session: sessionSQL{db},
+		Storage: storageSQL{db},
 	}
-	return &l, err
-}
 
-func (s storageSQL) SaveLink(l *store.LinkModel) error {
-	stmt, _ := s.db.Prepare("INSERT INTO links(user_id, symbol, url, description, created_at) values(?, ?, ?, ?, ?)")
-	defer stmt.Close()
-	_, err := stmt.Exec(l.UserID, l.Symbol, l.URL, l.Description, time.Now())
-	return err
-}
-
-func (s storageSQL) SaveUser(username string, password string) error {
-	var hashedPassword []byte
-	var err error
-	// TODO move this
-	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), 8); err != nil {
-		return err
-	}
-	// by default admin will be false
-	stmt, _ := s.db.Prepare("INSERT INTO users(username, password, created_at) VALUES(?, ?, ?)")
-	defer stmt.Close()
-	_, err = stmt.Exec(username, hashedPassword, time.Now())
-	return err
-}
-
-func (s storageSQL) SaveSession(sesssion *store.SessionModel) error {
-	stmt, _ := s.db.Prepare("INSERT INTO sessions(user_id, token, created_at, expiry_at) values(?, ?, ?, ?)")
-	defer stmt.Close()
-	_, err := stmt.Exec(sesssion.UserID, sesssion.Token, sesssion.CreatedAt, sesssion.ExpiryAt)
-	if err != nil {
-		log.Println(err)
-	}
-	return err
-}
-
-func (s storageSQL) GetByUsername(username string) (*store.UserModel, error) {
-	query := "SELECT id, username, password, admin, created_at FROM users WHERE username = ?"
-	u := &store.UserModel{}
-	err := s.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
-	if err != nil {
-		log.Println(err)
-	}
-	return u, err
-}
-
-func (s storageSQL) GetUserBySession(token string) (*store.UserModel, error) {
-	query := `SELECT users.id, username, password, users.admin, users.created_at from sessions 
-	JOIN users ON sessions.user_id = users.id 
-	WHERE token = ? AND expiry_at > ? 
-	ORDER BY sessions.expiry_at DESC LIMIT 1`
-	u := &store.UserModel{}
-	err := s.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
-	if err != nil {
-		log.Println(err)
-	}
-	return u, err
-}
-
-func (s storageSQL) GetAllLinks(u *store.UserModel) (*[]store.LinkModel, error) {
-	var links []store.LinkModel
-
-	query := "SELECT id, symbol, url, description, created_at FROM links WHERE user_id = ?"
-
-	stmt, _ := s.db.Prepare(query)
-	defer stmt.Close()
-
-	rows, _ := stmt.Query(u.ID)
-	defer rows.Close()
-
-	for rows.Next() {
-		l := store.LinkModel{UserID: u.ID}
-		rows.Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.CreatedAt)
-		links = append(links, l)
-	}
-	return &links, rows.Err()
+	return &s
 }

@@ -3,15 +3,32 @@ package store
 import "time"
 
 //TODO refactor this StorageService to include seperate subservices
-type StorageService interface {
-	SaveLink(l *LinkModel) error
-	SaveUser(username string, password string) error
-	SaveSession(session *SessionModel) error
-	GetUserBySession(token string) (*UserModel, error)
-	GetByUsername(username string) (*UserModel, error)
-	GetAllLinks(u *UserModel) (*[]LinkModel, error)
+
+type LinkStorage interface {
+	GetAll(u *UserModel) (*[]LinkModel, error)
 	FindBySymbol(symbol string) (*LinkModel, error)
+	Save(l *LinkModel) error
+}
+
+type UserStorage interface {
+	Save(username string, password string) error
+	GetBySession(token string) (*UserModel, error)
+	GetByUsername(username string) (*UserModel, error)
+}
+
+type SessionStorage interface {
+	Save(session *SessionModel) error
+}
+
+type Storage interface {
 	Close()
+}
+
+type StorageService struct {
+	Link    LinkStorage
+	User    UserStorage
+	Session SessionStorage
+	Storage
 }
 
 type SessionModel struct {
@@ -28,6 +45,7 @@ type LinkModel struct {
 	Symbol      string
 	URL         string
 	Description string
+	Note        string
 	CreatedAt   time.Time
 }
 
