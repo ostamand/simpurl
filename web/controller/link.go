@@ -49,6 +49,7 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
 		l := &store.LinkModel{
 			UserID:      u.ID,
 			Symbol:      req.FormValue("symbol"),

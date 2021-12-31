@@ -44,6 +44,11 @@ func (storage linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
 func (storage linkSQL) Save(l *store.LinkModel) error {
 	stmt, _ := storage.db.Prepare("INSERT INTO links(user_id, symbol, url, description, note, created_at) values(?, ?, ?, ?, ?, ?)")
 	defer stmt.Close()
+
 	_, err := stmt.Exec(l.UserID, l.Symbol, l.URL, l.Description, l.Note, time.Now())
+
+	if err != nil {
+		log.Println(err)
+	}
 	return err
 }

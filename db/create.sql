@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS links (
     description VARCHAR(4096),
     note VARCHAR(4096),
     created_at DATETIME NOT NULL,
-    PRIMARY KEY(id),
-    CONSTRAINT UC_links UNIQUE (symbol)
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS users (
