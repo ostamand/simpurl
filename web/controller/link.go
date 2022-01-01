@@ -55,6 +55,7 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 			Symbol:      req.FormValue("symbol"),
 			URL:         req.FormValue("url"),
 			Description: req.FormValue("description"),
+			Note:        req.FormValue("note"),
 		}
 
 		// TODO check if URL already exists
