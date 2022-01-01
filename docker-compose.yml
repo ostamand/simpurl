@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      args: 
+        config_file: config_dev.json
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    links:
+      - db
+  db:
+    image: mysql
+    #restart: always
+    environment:
+      # mysql -uroot -proot
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - "./db/create.sql:/docker-entrypoint-initdb.d/create.sql"
