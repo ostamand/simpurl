@@ -1,5 +1,5 @@
 # from: https://github.com/GoogleCloudPlatform/golang-samples/blob/main/run/helloworld/Dockerfile
-FROM golang:1.17.5-buster as builder
+FROM golang:1.17.5-buster
 
 WORKDIR /app
 
@@ -7,19 +7,10 @@ COPY go.* ./
 RUN go mod download
 
 COPY . ./
-RUN go build -v -o server ./web 
-
-FROM debian:buster-slim
-RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /app/server /app/server
-
-COPY ./ui /ui
 
 ARG config_file 
 ENV CONFIG_FILE=${config_file}
 COPY ./${config_file} .
 
+RUN go build -o server ./web
 CMD ["/app/server"]

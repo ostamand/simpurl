@@ -21,9 +21,9 @@ func (storage userSQL) Save(username string, password string) error {
 		return err
 	}
 	// by default admin will be false
-	stmt, _ := storage.db.Prepare("INSERT INTO users(username, password, created_at) VALUES(?, ?, ?)")
+	stmt, _ := storage.db.Prepare("INSERT INTO users(username, password, admin, created_at) VALUES(?, ?, ?, ?)")
 	defer stmt.Close()
-	_, err = stmt.Exec(username, hashedPassword, time.Now())
+	_, err = stmt.Exec(username, hashedPassword, false, time.Now())
 	return err
 }
 

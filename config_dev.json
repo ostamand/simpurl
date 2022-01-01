@@ -4,11 +4,11 @@
         "socketDir": "",
         "port": "3306",
         "user": "root",
-        "pass": "",
-        "name": "shorturl",
-        "addr": "docker.for.mac.localhost"
+        "pass": "root",
+        "name": "simpurl",
+        "addr": "db"
     }, 
     "general": {
-        "adminOnly": true
+        "adminOnly": false
     }
 }

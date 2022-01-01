@@ -1,4 +1,8 @@
 SHELL := /bin/bash
+down: 
+	docker compose down
+up: down
+	docker compose up -d --build
 test:
 	go test ./... -count=1
 setup:
@@ -6,9 +10,7 @@ setup:
 run:
 	go build -o server ./web && ./server
 docker:
-	docker build --build-arg config_file=$(CONFIG_FILE) -t $(TAG) .
-docker-run:
-	docker run --rm -p $(PORT):$(PORT) -p $(DB_PORT):$(DB_PORT) $(TAG)
+	docker build -f Dockerfile-server --build-arg config_file=$(CONFIG_FILE) -t $(TAG) .
 docker-push:
 	docker push $(TAG)
 deploy: docker docker-push
