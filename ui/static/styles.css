@@ -66,9 +66,6 @@ main {
   background: #2B1773
 }
 
-
-
-
 a.table-link:link, a.table-link:visited {
   color:#85858b
 }
@@ -84,7 +81,3 @@ a.table-link:hover {
 .column-url{
   max-width: 300px;
 }
-
- 
-
-

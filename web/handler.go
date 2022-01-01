@@ -12,8 +12,8 @@ import (
 )
 
 type Handler struct {
-	store.StorageService
-	User *user.UserHelper
+	Storage *store.StorageService
+	User    *user.UserHelper
 }
 
 func (h Handler) home(w http.ResponseWriter, req *http.Request) {
@@ -43,7 +43,7 @@ func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
 	}
 
 	symbol := splits[0]
-	if l, err := h.FindBySymbol(symbol); err != nil {
+	if l, err := h.Storage.Link.FindBySymbol(symbol); err != nil {
 		log.Printf("error during redirect: %s", err)
 		text := fmt.Sprintf("Short URL not found: %s", symbol)
 		http.Error(w, text, http.StatusBadRequest)

@@ -9,8 +9,8 @@ import (
 )
 
 type LinkController struct {
-	store.StorageService
-	User *user.UserHelper
+	Storage *store.StorageService
+	User    *user.UserHelper
 }
 
 func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
@@ -20,7 +20,7 @@ func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
 		if !ok {
 			return
 		}
-		links, _ := c.GetAllLinks(u)
+		links, _ := c.Storage.Link.GetAll(u)
 		viewData := CreateViewData(req, u)
 		data := struct {
 			*ViewData
@@ -49,16 +49,18 @@ func (c LinkController) Create(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+
 		l := &store.LinkModel{
 			UserID:      u.ID,
 			Symbol:      req.FormValue("symbol"),
 			URL:         req.FormValue("url"),
 			Description: req.FormValue("description"),
+			Note:        req.FormValue("note"),
 		}
 
 		// TODO check if URL already exists
 		// TODO check if symbol already associated
-		c.SaveLink(l)
+		c.Storage.Link.Save(l)
 
 		url := notify.AddNotificationToURL("/link/create", notify.NotifyLinkCreated)
 		http.Redirect(w, req, url, http.StatusSeeOther)

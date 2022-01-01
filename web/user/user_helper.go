@@ -12,7 +12,7 @@ import (
 
 type UserHelper struct {
 	AdminOnly bool
-	store.StorageService
+	Storage   *store.StorageService
 }
 
 const SessionCookie = "session_token"
@@ -37,13 +37,13 @@ func (h UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect
 func (h UserHelper) GetFromSession(req *http.Request) *store.UserModel {
 	user := &store.UserModel{}
 	if c, err := req.Cookie(SessionCookie); err == nil {
-		user, _ = h.GetUserBySession(c.Value)
+		user, _ = h.Storage.User.GetBySession(c.Value)
 	}
 	return user
 }
 
 func (h UserHelper) IsLoggedIn(sessionToken string) (*store.UserModel, error) {
-	return h.GetUserBySession(sessionToken)
+	return h.Storage.User.GetBySession(sessionToken)
 }
 
 func (h UserHelper) CreateSession(user *store.UserModel) (*store.SessionModel, error) {
@@ -54,12 +54,12 @@ func (h UserHelper) CreateSession(user *store.UserModel) (*store.SessionModel, e
 		CreatedAt: time.Now(),
 		ExpiryAt:  time.Now().Add(ExpirationDelay),
 	}
-	err := h.SaveSession(&session)
+	err := h.Storage.Session.Save(&session)
 	return &session, err
 }
 
 func (h UserHelper) VerifyPassword(username string, password string) (*store.UserModel, error) {
-	user, err := h.GetByUsername(username)
+	user, err := h.Storage.User.GetByUsername(username)
 	if err != nil {
 		return nil, err
 	}

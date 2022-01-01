@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/ostamand/url/web/store"
@@ -14,6 +15,7 @@ var l = &store.LinkModel{
 	Symbol:      "robots",
 	URL:         "https://www.google.com/robots.txt",
 	Description: "Google manage crawler traffic",
+	Note:        "My notest",
 }
 
 // reference: https://medium.com/easyread/unit-test-sql-in-golang-5af19075e68e
@@ -26,12 +28,12 @@ func NewMock() (*sql.DB, sqlmock.Sqlmock) {
 func TestFindBySymbol(t *testing.T) {
 	db, mock := NewMock()
 
-	store := &storageSQL{db}
-	defer store.Close()
+	store := &linkSQL{db}
+	defer db.Close()
 
-	query := "SELECT id, symbol, url, description FROM links WHERE symbol = \\?"
+	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE symbol = \\?"
 
-	rows := sqlmock.NewRows([]string{"id", "symbol", "url", "description"}).AddRow(l.ID, l.Symbol, l.URL, l.Description)
+	rows := sqlmock.NewRows([]string{"id", "symbol", "url", "description", "note", "created_at"}).AddRow(l.ID, l.Symbol, l.URL, l.Description, l.Note, time.Now())
 	mock.ExpectQuery(query).WithArgs(l.Symbol).WillReturnRows(rows)
 
 	linkFromSymbol, _ := store.FindBySymbol(l.Symbol)

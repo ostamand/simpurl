@@ -9,8 +9,8 @@ import (
 )
 
 type UserController struct {
-	store.StorageService
-	User *user.UserHelper
+	Storage *store.StorageService
+	User    *user.UserHelper
 }
 
 func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
@@ -22,7 +22,7 @@ func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		err := c.SaveUser(req.FormValue("username"), req.FormValue("password"))
+		err := c.Storage.User.Save(req.FormValue("username"), req.FormValue("password"))
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
