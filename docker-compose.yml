@@ -14,7 +14,6 @@ services:
     image: mysql
     #restart: always
     environment:
-      # mysql -uroot -proot
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"

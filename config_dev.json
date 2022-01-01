@@ -9,6 +9,6 @@
         "addr": "db"
     }, 
     "general": {
-        "adminOnly": true
+        "adminOnly": false
     }
 }
