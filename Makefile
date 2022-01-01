@@ -2,7 +2,7 @@ SHELL := /bin/bash
 down: 
 	docker compose down
 up: down
-	docker compose up --build
+	docker compose up -d --build
 test:
 	go test ./... -count=1
 setup:

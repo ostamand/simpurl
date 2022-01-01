@@ -7,19 +7,13 @@ on:
     branches: [ master ]
 
 jobs:
-
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
+      - uses: actions/checkout@v2
+      - name: Build
+        run: docker compose up -d --build
+      - name: Test
+        run: docker compose run server go test ./... -count=1
+      - name: Cleanup
+        run: docker compose down
