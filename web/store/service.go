@@ -11,13 +11,15 @@ type LinkStorage interface {
 }
 
 type UserStorage interface {
-	Save(username string, password string) error
+	Save(u *UserModel) error
+	Delete(id int) error
 	GetBySession(token string) (*UserModel, error)
 	GetByUsername(username string) (*UserModel, error)
 }
 
 type SessionStorage interface {
 	Save(session *SessionModel) error
+	DeleteFromToken(token string) error
 }
 
 type Storage interface {
@@ -50,11 +52,12 @@ type LinkModel struct {
 }
 
 type UserModel struct {
-	ID        int
-	Username  string
-	Password  string
-	Admin     bool
-	CreatedAt time.Time
+	ID             int
+	Username       string
+	HashedPassword string
+	Password       string
+	Admin          bool
+	CreatedAt      time.Time
 }
 
 func (u UserModel) Authenticated() bool {

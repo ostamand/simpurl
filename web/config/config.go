@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"strings"
 )
 
 type Params struct {
@@ -37,4 +39,17 @@ func Get(filePath string) *Params {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &data)
 	return data
+}
+
+func FindIn(dir string, fileName string) (p string, ok bool) {
+	ok = true
+	p = path.Join(dir, fileName)
+	if _, err := os.Stat(p); err != nil {
+		if strings.Compare(dir, "/") != 0 {
+			p, ok = FindIn(path.Dir(dir), fileName)
+		} else {
+			return dir, false
+		}
+	}
+	return p, ok
 }

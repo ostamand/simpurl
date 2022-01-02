@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS links (
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
-    password VARCHAR(255),
+    hashed_password VARCHAR(255),
     admin BOOLEAN,
-    PRIMARY KEY(id),
     created_at DATETIME NOT NULL,
+    PRIMARY KEY(id),
     CONSTRAINT UC_users UNIQUE(username)
 );
 

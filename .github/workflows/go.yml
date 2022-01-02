@@ -13,6 +13,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: docker compose up -d --build
+      - name: DB check connection
+        run: docker compose run server ping -c 5 db
       - name: Test
         run: docker compose run server go test ./... -count=1
       - name: Cleanup
