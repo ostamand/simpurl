@@ -22,7 +22,11 @@ func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		err := c.Storage.User.Save(req.FormValue("username"), req.FormValue("password"))
+		u := store.UserModel{
+			Username: req.FormValue("username"),
+			Password: req.FormValue("password"),
+		}
+		err := c.Storage.User.Save(&u)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

@@ -13,24 +13,29 @@ type userSQL struct {
 	db *sql.DB
 }
 
-func (storage userSQL) Save(username string, password string) error {
+func (storage userSQL) Save(u *store.UserModel) error {
 	var hashedPassword []byte
 	var err error
-	// TODO move this
-	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(password), 8); err != nil {
+	if hashedPassword, err = bcrypt.GenerateFromPassword([]byte(u.Password), 8); err != nil {
 		return err
 	}
-	// by default admin will be false
-	stmt, _ := storage.db.Prepare("INSERT INTO users(username, password, admin, created_at) VALUES(?, ?, ?, ?)")
+	stmt, _ := storage.db.Prepare("INSERT INTO users(username, hashed_password, admin, created_at) VALUES(?, ?, ?, ?)")
 	defer stmt.Close()
-	_, err = stmt.Exec(username, hashedPassword, false, time.Now())
+	_, err = stmt.Exec(u.Username, hashedPassword, u.Admin, time.Now())
+	return err
+}
+
+func (storage userSQL) Delete(id int) error {
+	stmt, _ := storage.db.Prepare("DELETE FROM users WHERE id = ?")
+	defer stmt.Close()
+	_, err := stmt.Exec(id)
 	return err
 }
 
 func (storage userSQL) GetByUsername(username string) (*store.UserModel, error) {
-	query := "SELECT id, username, password, admin, created_at FROM users WHERE username = ?"
+	query := "SELECT id, username, hashed_password, admin, created_at FROM users WHERE username = ?"
 	u := &store.UserModel{}
-	err := storage.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
+	err := storage.db.QueryRow(query, username).Scan(&u.ID, &u.Username, &u.HashedPassword, &u.Admin, &u.CreatedAt)
 	if err != nil {
 		log.Println(err)
 	}

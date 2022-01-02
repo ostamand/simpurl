@@ -7,8 +7,10 @@ test:
 	go test ./... -count=1
 setup:
 	gcloud auth configure-docker $(REGION)-docker.pkg.dev
-run:
-	go build -o server ./web && ./server
+build:
+	go build -o server ./web
+run: build
+	./server
 docker:
 	docker build -f Dockerfile-server --build-arg config_file=$(CONFIG_FILE) -t $(TAG) .
 docker-push:
