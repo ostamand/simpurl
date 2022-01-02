@@ -77,5 +77,4 @@ func TestAdminNoAccess(t *testing.T) {
 	// cleanup
 	h.Storage.User.Delete(u.ID)
 	h.Storage.Session.DeleteFromToken(s.Token)
-
 }

@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255),
     hashed_password VARCHAR(255),
     admin BOOLEAN,
-    PRIMARY KEY(id),
     created_at DATETIME NOT NULL,
+    PRIMARY KEY(id),
     CONSTRAINT UC_users UNIQUE(username)
 );
 
