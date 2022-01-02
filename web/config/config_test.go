@@ -11,7 +11,7 @@ const configFile = "config_dev.json"
 
 func TestCanGetConfig(t *testing.T) {
 	wd, _ := os.Getwd()
-	fullPath, ok := FindInParent(wd, configFile)
+	fullPath, ok := FindIn(wd, configFile)
 	assert.True(t, ok)
 	data := Get(fullPath)
 	assert.Equal(t, "simpurl", data.Db.Name)
@@ -20,7 +20,7 @@ func TestCanGetConfig(t *testing.T) {
 
 func TestConfigDoesNotExists(t *testing.T) {
 	wd, _ := os.Getwd()
-	p, ok := FindInParent(wd, "rnd")
+	p, ok := FindIn(wd, "rnd")
 	assert.Equal(t, "/", p)
 	assert.False(t, ok)
 }

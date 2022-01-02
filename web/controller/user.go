@@ -3,14 +3,14 @@ package controller
 import (
 	"net/http"
 
+	"github.com/ostamand/url/web/helper"
 	"github.com/ostamand/url/web/notify"
 	"github.com/ostamand/url/web/store"
-	"github.com/ostamand/url/web/user"
 )
 
 type UserController struct {
 	Storage *store.StorageService
-	User    *user.UserHelper
+	User    *helper.UserHelper
 }
 
 func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
@@ -36,11 +36,7 @@ func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c UserController) Signout(w http.ResponseWriter, req *http.Request) {
-	// delete cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:   SessionCookie,
-		MaxAge: -1,
-	})
+	c.User.Session.Clear(w)
 	http.Redirect(w, req, "/", http.StatusSeeOther)
 }
 
@@ -67,19 +63,12 @@ func (c UserController) Signin(w http.ResponseWriter, req *http.Request) {
 		}
 
 		// create session token
-		session, err := c.User.CreateSession(u)
+		_, err = c.User.CreateSession(w, u.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			// TODO redirect to signin
 			return
 		}
-
-		// set cookie based on session
-		http.SetCookie(w, &http.Cookie{
-			Name:    SessionCookie,
-			Value:   session.Token,
-			Expires: session.ExpiryAt,
-		})
 
 		// go back to home for now
 		http.Redirect(

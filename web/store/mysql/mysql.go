@@ -43,7 +43,7 @@ func InitializeSQL(params *config.ParamsDB) *store.StorageService {
 	s := store.StorageService{
 		Link:    linkSQL{db},
 		User:    userSQL{db},
-		Session: sessionSQL{db},
+		Session: &sessionSQL{db},
 		Storage: storageSQL{db},
 	}
 

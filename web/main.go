@@ -7,8 +7,8 @@ import (
 
 	"github.com/ostamand/url/web/config"
 	ctrl "github.com/ostamand/url/web/controller"
+	"github.com/ostamand/url/web/helper"
 	"github.com/ostamand/url/web/store/mysql"
-	"github.com/ostamand/url/web/user"
 )
 
 func main() {
@@ -21,8 +21,9 @@ func main() {
 
 	// helpers
 	s := mysql.InitializeSQL(&params.Db)
-	userHelper := user.UserHelper{
+	userHelper := helper.UserHelper{
 		AdminOnly: params.General.AdminOnly,
+		Session:   helper.SessionHTTP{},
 		Storage:   s,
 	}
 

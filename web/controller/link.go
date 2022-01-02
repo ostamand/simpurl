@@ -3,14 +3,14 @@ package controller
 import (
 	"net/http"
 
+	"github.com/ostamand/url/web/helper"
 	"github.com/ostamand/url/web/notify"
 	"github.com/ostamand/url/web/store"
-	"github.com/ostamand/url/web/user"
 )
 
 type LinkController struct {
 	Storage *store.StorageService
-	User    *user.UserHelper
+	User    *helper.UserHelper
 }
 
 func (c LinkController) List(w http.ResponseWriter, req *http.Request) {

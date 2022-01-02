@@ -19,6 +19,7 @@ type UserStorage interface {
 
 type SessionStorage interface {
 	Save(session *SessionModel) error
+	DeleteFromToken(token string) error
 }
 
 type Storage interface {

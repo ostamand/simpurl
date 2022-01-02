@@ -41,12 +41,12 @@ func Get(filePath string) *Params {
 	return data
 }
 
-func FindInParent(dir string, fileName string) (p string, ok bool) {
+func FindIn(dir string, fileName string) (p string, ok bool) {
 	ok = true
 	p = path.Join(dir, fileName)
 	if _, err := os.Stat(p); err != nil {
 		if strings.Compare(dir, "/") != 0 {
-			p, ok = FindInParent(path.Dir(dir), fileName)
+			p, ok = FindIn(path.Dir(dir), fileName)
 		} else {
 			return dir, false
 		}

@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
@@ -15,9 +14,8 @@ var storage *store.StorageService
 
 func init() {
 	wd, _ := os.Getwd()
-	fullPath := filepath.Join(filepath.Dir(filepath.Dir(filepath.Dir(wd))), os.Getenv("CONFIG_FILE"))
-
-	params := config.Get(fullPath)
+	configPath, _ := config.FindIn(wd, os.Getenv("CONFIG_FILE"))
+	params := config.Get(configPath)
 	storage = InitializeSQL(&params.Db)
 }
 

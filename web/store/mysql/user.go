@@ -42,13 +42,14 @@ func (storage userSQL) GetByUsername(username string) (*store.UserModel, error) 
 	return u, err
 }
 
+// TODO refactor this. won't work for 2 users
 func (storage userSQL) GetBySession(token string) (*store.UserModel, error) {
-	query := `SELECT users.id, username, password, users.admin, users.created_at from sessions 
+	query := `SELECT users.id, username, hashed_password, users.admin, users.created_at from sessions 
 	JOIN users ON sessions.user_id = users.id 
-	WHERE token = ? AND expiry_at > ? 
+	WHERE token = ? AND expiry_at >= ? 
 	ORDER BY sessions.expiry_at DESC LIMIT 1`
 	u := &store.UserModel{}
-	err := storage.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.Password, &u.Admin, &u.CreatedAt)
+	err := storage.db.QueryRow(query, token, time.Now()).Scan(&u.ID, &u.Username, &u.HashedPassword, &u.Admin, &u.CreatedAt)
 	if err != nil {
 		log.Println(err)
 	}

@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	ctrl "github.com/ostamand/url/web/controller"
+	"github.com/ostamand/url/web/helper"
 	"github.com/ostamand/url/web/store"
-	"github.com/ostamand/url/web/user"
 )
 
 type Handler struct {
 	Storage *store.StorageService
-	User    *user.UserHelper
+	User    *helper.UserHelper
 }
 
 func (h Handler) home(w http.ResponseWriter, req *http.Request) {
