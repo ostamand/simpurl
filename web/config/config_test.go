@@ -2,18 +2,25 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-const configPath = "config_dev.json"
+const configFile = "config_dev.json"
 
 func TestCanGetConfig(t *testing.T) {
 	wd, _ := os.Getwd()
-	fullPath := filepath.Join(filepath.Dir(filepath.Dir(wd)), configPath)
+	fullPath, ok := FindInParent(wd, configFile)
+	assert.True(t, ok)
 	data := Get(fullPath)
 	assert.Equal(t, "simpurl", data.Db.Name)
 	assert.Equal(t, "root", data.Db.User)
+}
+
+func TestConfigDoesNotExists(t *testing.T) {
+	wd, _ := os.Getwd()
+	p, ok := FindInParent(wd, "rnd")
+	assert.Equal(t, "/", p)
+	assert.False(t, ok)
 }
