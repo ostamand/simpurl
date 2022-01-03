@@ -13,7 +13,7 @@
     </tr>
 {{range $l := .Links}}
     <tr class="row-condensed">
-        <th class="column-url"><div class="text-wrap"><a class="table-link" href={{$l.URL}}>{{$l.URL}}</a></div></th>
+        <th class="column-url"><div class="text-wrap"><a target="_blank" class="table-link" href={{$l.URL}}>{{$l.URL}}</a></div></th>
         <th>{{$l.Description}}</th>
         <th>{{$l.Symbol}}</th>
     </tr>
