@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ostamand/url/web/api"
 	"github.com/ostamand/url/web/config"
 	ctrl "github.com/ostamand/url/web/controller"
 	"github.com/ostamand/url/web/helper"
@@ -21,7 +22,7 @@ func main() {
 
 	// helpers
 	s := mysql.InitializeSQL(&params.Db)
-	userHelper := helper.UserHelper{
+	userHelper := &helper.UserHelper{
 		AdminOnly: params.General.AdminOnly,
 		Session:   helper.SessionHTTP{},
 		Storage:   s,
@@ -30,7 +31,7 @@ func main() {
 	// main controller
 	h := Handler{
 		Storage: s,
-		User:    &userHelper,
+		User:    userHelper,
 	}
 	http.HandleFunc("/", h.redirect)
 	http.HandleFunc("/home", h.home)
@@ -38,7 +39,7 @@ func main() {
 	// user controller
 	u := ctrl.UserController{
 		Storage: s,
-		User:    &userHelper,
+		User:    userHelper,
 	}
 	http.HandleFunc("/signup", u.Signup)
 	http.HandleFunc("/signin", u.Signin)
@@ -47,10 +48,14 @@ func main() {
 	// link controller
 	l := ctrl.LinkController{
 		Storage: s,
-		User:    &userHelper,
+		User:    userHelper,
 	}
 	http.HandleFunc("/link/create", l.Create)
 	http.HandleFunc("/link", l.List)
+
+	// api
+	userAPI := api.UserController{Storage: s, User: userHelper}
+	http.HandleFunc("/api/signin", userAPI.Signin)
 
 	// file server
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
