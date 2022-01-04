@@ -32,6 +32,13 @@ func (storage userSQL) Delete(id int) error {
 	return err
 }
 
+func (storage userSQL) DeleteFromUsername(username string) error {
+	stmt, _ := storage.db.Prepare("DELETE FROM users WHERE username = ?")
+	defer stmt.Close()
+	_, err := stmt.Exec(username)
+	return err
+}
+
 func (storage userSQL) GetByUsername(username string) (*store.UserModel, error) {
 	query := "SELECT id, username, hashed_password, admin, created_at FROM users WHERE username = ?"
 	u := &store.UserModel{}
