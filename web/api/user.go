@@ -34,7 +34,7 @@ func (c *UserController) Signin(w http.ResponseWriter, req *http.Request) {
 	_ = json.Unmarshal(body, &request)
 
 	u, err := c.User.VerifyPassword(request.Username, request.Password)
-	if err != nil {
+	if err != nil || (c.User.AdminOnly && !u.Admin) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}

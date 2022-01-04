@@ -15,6 +15,7 @@ type UserStorage interface {
 	Delete(id int) error
 	GetBySession(token string) (*UserModel, error)
 	GetByUsername(username string) (*UserModel, error)
+	DeleteFromUsername(username string) error
 }
 
 type SessionStorage interface {

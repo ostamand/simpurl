@@ -47,7 +47,7 @@ func sendRequest(username string, password string) (*http.Response, SigninRespon
 	return resp, dataResponse
 }
 
-func TestSignin(t *testing.T) {
+func TestSigninUserDoesNotExists(t *testing.T) {
 	// user does not exists
 	resp, data := sendRequest("user", "password")
 	if resp.StatusCode != http.StatusUnauthorized {
@@ -56,15 +56,39 @@ func TestSignin(t *testing.T) {
 	if data.Token != "" {
 		t.Errorf("Expecting no token but got %s", data.Token)
 	}
+}
 
-	// user does exists
+func TestAdmin(t *testing.T) {
+	ctrl.User.AdminOnly = true
+
 	u := &store.UserModel{
 		Username: "user",
 		Password: "password",
 		Admin:    false,
 	}
 	storage.User.Save(u)
-	resp, data = sendRequest(u.Username, u.Password)
+	resp, data := sendRequest(u.Username, u.Password)
+
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Error("Expection status 401 since users is not admin")
+	}
+	if data.Token != "" {
+		t.Errorf("Expecting no token but got %s", data.Token)
+	}
+
+	// cleanup
+	storage.User.DeleteFromUsername(u.Username)
+	ctrl.User.AdminOnly = false
+}
+
+func TestSigninUserExists(t *testing.T) {
+	u := &store.UserModel{
+		Username: "user",
+		Password: "password",
+		Admin:    false,
+	}
+	storage.User.Save(u)
+	resp, data := sendRequest(u.Username, u.Password)
 	if resp.StatusCode != http.StatusOK {
 		t.Error("Expection status 200 since users exists")
 	}
