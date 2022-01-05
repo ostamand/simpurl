@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ostamand/url/cmd/web/notify"
-	"github.com/ostamand/url/cmd/web/store"
+	"github.com/ostamand/url/internal/store"
 	"golang.org/x/crypto/bcrypt"
 )
 

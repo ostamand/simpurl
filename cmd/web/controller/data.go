@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ostamand/url/cmd/web/notify"
-	"github.com/ostamand/url/cmd/web/store"
+	"github.com/ostamand/url/internal/store"
 )
 
 const SessionCookie = "session_token"

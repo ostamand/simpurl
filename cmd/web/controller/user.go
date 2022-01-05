@@ -5,7 +5,7 @@ import (
 
 	"github.com/ostamand/url/cmd/web/helper"
 	"github.com/ostamand/url/cmd/web/notify"
-	"github.com/ostamand/url/cmd/web/store"
+	"github.com/ostamand/url/internal/store"
 )
 
 type UserController struct {

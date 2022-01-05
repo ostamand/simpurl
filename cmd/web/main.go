@@ -7,10 +7,10 @@ import (
 	"os"
 
 	"github.com/ostamand/url/cmd/web/api"
-	"github.com/ostamand/url/cmd/web/config"
 	ctrl "github.com/ostamand/url/cmd/web/controller"
 	"github.com/ostamand/url/cmd/web/helper"
-	"github.com/ostamand/url/cmd/web/store/mysql"
+	"github.com/ostamand/url/internal/config"
+	"github.com/ostamand/url/internal/store/mysql"
 )
 
 func main() {
