@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ostamand/url/internal/config"
-	"github.com/ostamand/url/internal/store"
-	"github.com/ostamand/url/internal/store/mysql"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/store/mysql"
 	"github.com/stretchr/testify/assert"
 )
 

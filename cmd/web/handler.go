@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	ctrl "github.com/ostamand/url/cmd/web/controller"
-	"github.com/ostamand/url/cmd/web/helper"
-	"github.com/ostamand/url/internal/store"
+	ctrl "github.com/ostamand/simpurl/cmd/web/controller"
+	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type Handler struct {

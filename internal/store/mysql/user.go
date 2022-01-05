@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ostamand/url/internal/store"
+	"github.com/ostamand/simpurl/internal/store"
 	"golang.org/x/crypto/bcrypt"
 )
 

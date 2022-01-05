@@ -1,4 +1,4 @@
-module github.com/ostamand/url
+module github.com/ostamand/simpurl
 
 go 1.17
 

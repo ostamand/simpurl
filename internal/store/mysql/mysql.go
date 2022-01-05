@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/ostamand/url/internal/config"
-	"github.com/ostamand/url/internal/store"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type storageSQL struct {

@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ostamand/url/cmd/web/api"
-	ctrl "github.com/ostamand/url/cmd/web/controller"
-	"github.com/ostamand/url/cmd/web/helper"
-	"github.com/ostamand/url/internal/config"
-	"github.com/ostamand/url/internal/store/mysql"
+	"github.com/ostamand/simpurl/cmd/web/api"
+	ctrl "github.com/ostamand/simpurl/cmd/web/controller"
+	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store/mysql"
 )
 
 func main() {

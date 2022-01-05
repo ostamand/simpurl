@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ostamand/url/cmd/web/helper"
-	"github.com/ostamand/url/cmd/web/notify"
-	"github.com/ostamand/url/internal/store"
+	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/cmd/web/notify"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type LinkController struct {

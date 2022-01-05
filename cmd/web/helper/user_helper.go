@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ostamand/url/cmd/web/notify"
-	"github.com/ostamand/url/internal/store"
+	"github.com/ostamand/simpurl/cmd/web/notify"
+	"github.com/ostamand/simpurl/internal/store"
 	"golang.org/x/crypto/bcrypt"
 )
 

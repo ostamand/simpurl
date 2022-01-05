@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/ostamand/url/internal/store"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type sessionSQL struct {
