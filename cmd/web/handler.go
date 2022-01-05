@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	ctrl "github.com/ostamand/url/web/controller"
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/store"
+	ctrl "github.com/ostamand/url/cmd/web/controller"
+	"github.com/ostamand/url/cmd/web/helper"
+	"github.com/ostamand/url/cmd/web/store"
 )
 
 type Handler struct {
@@ -16,7 +16,7 @@ type Handler struct {
 	User    *helper.UserHelper
 }
 
-func (h Handler) home(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) home(w http.ResponseWriter, req *http.Request) {
 	u, ok := h.User.HasAccess(w, req, "/signin")
 	if ok {
 		data := ctrl.CreateViewData(req, u)
@@ -24,7 +24,7 @@ func (h Handler) home(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (h Handler) redirect(w http.ResponseWriter, req *http.Request) {
+func (h *Handler) redirect(w http.ResponseWriter, req *http.Request) {
 	url := req.URL.String()
 
 	if url == "/" {

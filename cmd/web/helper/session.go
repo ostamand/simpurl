@@ -24,7 +24,7 @@ func GenerateToken() (token string, expires time.Time) {
 	return
 }
 
-func (s SessionHTTP) Get(req *http.Request) (string, error) {
+func (s *SessionHTTP) Get(req *http.Request) (string, error) {
 	c, err := req.Cookie(SessionCookie)
 	if err == nil {
 		return c.Value, err
@@ -32,7 +32,7 @@ func (s SessionHTTP) Get(req *http.Request) (string, error) {
 	return "", err
 }
 
-func (s SessionHTTP) Save(w http.ResponseWriter) (string, time.Time) {
+func (s *SessionHTTP) Save(w http.ResponseWriter) (string, time.Time) {
 	sessionToken, expires := GenerateToken()
 	http.SetCookie(w, &http.Cookie{
 		Name:    SessionCookie,
@@ -42,7 +42,7 @@ func (s SessionHTTP) Save(w http.ResponseWriter) (string, time.Time) {
 	return sessionToken, expires
 }
 
-func (s SessionHTTP) Clear(w http.ResponseWriter) {
+func (s *SessionHTTP) Clear(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:   SessionCookie,
 		MaxAge: -1,

@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/notify"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/url/cmd/web/helper"
+	"github.com/ostamand/url/cmd/web/notify"
+	"github.com/ostamand/url/cmd/web/store"
 )
 
 type LinkController struct {
@@ -13,7 +13,7 @@ type LinkController struct {
 	User    *helper.UserHelper
 }
 
-func (c LinkController) List(w http.ResponseWriter, req *http.Request) {
+func (c *LinkController) List(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		u, ok := c.User.HasAccess(w, req, "/signin")

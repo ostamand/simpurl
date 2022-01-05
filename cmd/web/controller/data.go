@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ostamand/url/web/notify"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/url/cmd/web/notify"
+	"github.com/ostamand/url/cmd/web/store"
 )
 
 const SessionCookie = "session_token"

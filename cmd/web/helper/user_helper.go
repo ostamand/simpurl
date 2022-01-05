@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ostamand/url/web/notify"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/url/cmd/web/notify"
+	"github.com/ostamand/url/cmd/web/store"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,7 +15,7 @@ type UserHelper struct {
 	Session   SessionClient
 }
 
-func (h UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) (*store.UserModel, bool) {
+func (h *UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) (*store.UserModel, bool) {
 	u := h.GetFromSession(req)
 	adminOnly := h.AdminOnly && !u.Admin
 	if !u.Authenticated() || adminOnly {
@@ -33,7 +33,7 @@ func (h UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect
 	return u, true
 }
 
-func (h UserHelper) GetFromSession(req *http.Request) *store.UserModel {
+func (h *UserHelper) GetFromSession(req *http.Request) *store.UserModel {
 	user := &store.UserModel{}
 	if c, err := h.Session.Get(req); err == nil {
 		user, _ = h.Storage.User.GetBySession(c)
@@ -41,7 +41,7 @@ func (h UserHelper) GetFromSession(req *http.Request) *store.UserModel {
 	return user
 }
 
-func (h UserHelper) CreateSession(w http.ResponseWriter, userID int) (*store.SessionModel, error) {
+func (h *UserHelper) CreateSession(w http.ResponseWriter, userID int) (*store.SessionModel, error) {
 	sessionToken, expires := h.Session.Save(w)
 	session := store.SessionModel{
 		UserID:    userID,
@@ -53,7 +53,7 @@ func (h UserHelper) CreateSession(w http.ResponseWriter, userID int) (*store.Ses
 	return &session, err
 }
 
-func (h UserHelper) VerifyPassword(username string, password string) (*store.UserModel, error) {
+func (h *UserHelper) VerifyPassword(username string, password string) (*store.UserModel, error) {
 	user, err := h.Storage.User.GetByUsername(username)
 	if err != nil {
 		return nil, err

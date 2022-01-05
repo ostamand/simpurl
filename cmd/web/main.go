@@ -1,19 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/ostamand/url/web/api"
-	"github.com/ostamand/url/web/config"
-	ctrl "github.com/ostamand/url/web/controller"
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/store/mysql"
+	"github.com/ostamand/url/cmd/web/api"
+	"github.com/ostamand/url/cmd/web/config"
+	ctrl "github.com/ostamand/url/cmd/web/controller"
+	"github.com/ostamand/url/cmd/web/helper"
+	"github.com/ostamand/url/cmd/web/store/mysql"
 )
 
 func main() {
-	params := config.Get(os.Getenv("CONFIG_FILE"))
+	wd, _ := os.Getwd()
+	configPath, _ := config.FindIn(wd, os.Getenv("CONFIG_FILE"))
+	fmt.Println(configPath)
+	params := config.Get(configPath)
 
 	// hack to run locally thru docker
 	if _, err := os.Stat("/.dockerenv"); err != nil {
@@ -24,7 +28,7 @@ func main() {
 	s := mysql.InitializeSQL(&params.Db)
 	userHelper := &helper.UserHelper{
 		AdminOnly: params.General.AdminOnly,
-		Session:   helper.SessionHTTP{},
+		Session:   &helper.SessionHTTP{},
 		Storage:   s,
 	}
 
@@ -58,7 +62,7 @@ func main() {
 	http.HandleFunc("/api/signin", userAPI.Signin)
 
 	// file server
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	fileServer := http.FileServer(http.Dir("./web/static/"))
 	http.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// server

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/url/cmd/web/helper"
+	"github.com/ostamand/url/cmd/web/store"
 )
 
 type UserController struct {

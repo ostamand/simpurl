@@ -8,7 +8,7 @@ test:
 setup:
 	gcloud auth configure-docker $(REGION)-docker.pkg.dev
 build:
-	go build -o server ./web
+	go build -o server ./cmd/web
 run: build
 	./server
 docker:
