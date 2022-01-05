@@ -7,7 +7,7 @@ COPY go.* ./
 RUN go mod download
 
 COPY . ./
-RUN go build -v -o server ./web 
+RUN go build -v -o server ./cmd/web 
 
 FROM debian:buster-slim
 RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -16,7 +16,7 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 
 COPY --from=builder /app/server /app/server
 
-COPY ./ui /ui
+COPY ./web /web
 
 ARG config_file 
 ENV CONFIG_FILE=${config_file}

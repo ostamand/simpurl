@@ -12,5 +12,5 @@ ARG config_file
 ENV CONFIG_FILE=${config_file}
 COPY ./${config_file} .
 
-RUN go build -o server ./web
+RUN go build -o server ./cmd/web
 CMD ["/app/server"]

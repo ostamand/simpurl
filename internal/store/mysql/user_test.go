@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ostamand/url/web/config"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store"
 	"github.com/stretchr/testify/assert"
 )
 

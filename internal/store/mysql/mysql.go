@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/ostamand/url/web/config"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type storageSQL struct {
@@ -41,8 +41,8 @@ func InitializeSQL(params *config.ParamsDB) *store.StorageService {
 	}
 
 	s := store.StorageService{
-		Link:    linkSQL{db},
-		User:    userSQL{db},
+		Link:    &linkSQL{db},
+		User:    &userSQL{db},
 		Session: &sessionSQL{db},
 		Storage: storageSQL{db},
 	}

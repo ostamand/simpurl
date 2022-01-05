@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/simpurl/internal/store"
 	"github.com/stretchr/testify/assert"
 )
 

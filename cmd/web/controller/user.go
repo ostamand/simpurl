@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/notify"
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/cmd/web/notify"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type UserController struct {
@@ -13,7 +13,7 @@ type UserController struct {
 	User    *helper.UserHelper
 }
 
-func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
+func (c *UserController) Signup(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		ShowPage(w, nil, "signup.page.html")
@@ -35,12 +35,12 @@ func (c UserController) Signup(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func (c UserController) Signout(w http.ResponseWriter, req *http.Request) {
+func (c *UserController) Signout(w http.ResponseWriter, req *http.Request) {
 	c.User.Session.Clear(w)
 	http.Redirect(w, req, "/", http.StatusSeeOther)
 }
 
-func (c UserController) Signin(w http.ResponseWriter, req *http.Request) {
+func (c *UserController) Signin(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 		data := CreateViewData(req, nil)

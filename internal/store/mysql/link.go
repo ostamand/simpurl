@@ -5,14 +5,14 @@ import (
 	"log"
 	"time"
 
-	"github.com/ostamand/url/web/store"
+	"github.com/ostamand/simpurl/internal/store"
 )
 
 type linkSQL struct {
 	db *sql.DB
 }
 
-func (storage linkSQL) GetAll(u *store.UserModel) (*[]store.LinkModel, error) {
+func (storage *linkSQL) GetAll(u *store.UserModel) (*[]store.LinkModel, error) {
 	var links []store.LinkModel
 
 	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE user_id = ?"
@@ -31,7 +31,7 @@ func (storage linkSQL) GetAll(u *store.UserModel) (*[]store.LinkModel, error) {
 	return &links, rows.Err()
 }
 
-func (storage linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
+func (storage *linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
 	var l store.LinkModel
 	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE symbol = ?"
 	err := storage.db.QueryRow(query, symbol).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.Note, &l.CreatedAt)
@@ -41,7 +41,7 @@ func (storage linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
 	return &l, err
 }
 
-func (storage linkSQL) Save(l *store.LinkModel) error {
+func (storage *linkSQL) Save(l *store.LinkModel) error {
 	stmt, _ := storage.db.Prepare("INSERT INTO links(user_id, symbol, url, description, note, created_at) values(?, ?, ?, ?, ?, ?)")
 	defer stmt.Close()
 

@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ostamand/url/web/config"
-	"github.com/ostamand/url/web/helper"
-	"github.com/ostamand/url/web/store"
-	"github.com/ostamand/url/web/store/mysql"
+	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/store/mysql"
 )
 
 var ctrl *UserController
