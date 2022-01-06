@@ -35,9 +35,6 @@ func (storage *linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
 	var l store.LinkModel
 	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE symbol = ?"
 	err := storage.db.QueryRow(query, symbol).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.Note, &l.CreatedAt)
-	if err != nil {
-		log.Println(err)
-	}
 	return &l, err
 }
 
@@ -50,5 +47,12 @@ func (storage *linkSQL) Save(l *store.LinkModel) error {
 	if err != nil {
 		log.Println(err)
 	}
+	return err
+}
+
+func (storage *linkSQL) DeleteByURL(url string) error {
+	stmt, _ := storage.db.Prepare("DELETE FROM links WHERE url = ?")
+	defer stmt.Close()
+	_, err := stmt.Exec(url)
 	return err
 }
