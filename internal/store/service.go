@@ -5,6 +5,7 @@ import "time"
 //TODO refactor this StorageService to include seperate subservices
 
 type LinkStorage interface {
+	DeleteByURL(url string) error
 	GetAll(u *UserModel) (*[]LinkModel, error)
 	FindBySymbol(symbol string) (*LinkModel, error)
 	Save(l *LinkModel) error

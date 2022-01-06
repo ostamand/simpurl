@@ -26,6 +26,7 @@ type SigninResponse struct {
 
 func (c *UserController) Signin(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	defer req.Body.Close()
