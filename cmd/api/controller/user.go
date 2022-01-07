@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"encoding/json"
@@ -6,13 +6,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 type UserController struct {
 	Storage *store.StorageService
-	User    *helper.UserHelper
+	User    *user.UserHelper
 }
 
 type SigninRequest struct {
@@ -41,7 +42,7 @@ func (c *UserController) Signin(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// create new session
-	token, expires := helper.GenerateToken()
+	token, expires := session.GenerateToken()
 	session := store.SessionModel{
 		UserID:    u.ID,
 		Token:     token,

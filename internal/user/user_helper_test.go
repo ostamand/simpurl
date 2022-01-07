@@ -1,4 +1,4 @@
-package helper
+package user
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,7 @@ type SessionMock struct {
 }
 
 func (s *SessionMock) Save(http.ResponseWriter) (string, time.Time) {
-	sessionToken, expires := GenerateToken()
+	sessionToken, expires := session.GenerateToken()
 	s.Token = sessionToken
 	return sessionToken, expires
 }

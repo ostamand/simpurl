@@ -1,17 +1,17 @@
-package api
+package controller
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 type LinkController struct {
 	Storage *store.StorageService
-	User    *helper.UserHelper
+	User    *user.UserHelper
 }
 
 type CreateRequest struct {

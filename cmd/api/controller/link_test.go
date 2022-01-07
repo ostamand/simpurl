@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"bytes"
@@ -9,10 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 var linkCtrl *LinkController
@@ -23,7 +24,7 @@ func init() {
 	params := config.Get(configPath)
 	storage := mysql.InitializeSQL(&params.Db)
 
-	u := &helper.UserHelper{AdminOnly: false, Storage: storage}
+	u := &user.UserHelper{AdminOnly: false, Storage: storage}
 	linkCtrl = &LinkController{Storage: storage, User: u}
 }
 
@@ -55,7 +56,7 @@ func createUserAndSession() (*store.UserModel, *store.SessionModel) {
 	userCtrl.Storage.User.Save(u)
 	u, _ = userCtrl.Storage.User.GetByUsername(u.Username)
 
-	token, expires := helper.GenerateToken()
+	token, expires := session.GenerateToken()
 	session := &store.SessionModel{
 		UserID:    u.ID,
 		Token:     token,

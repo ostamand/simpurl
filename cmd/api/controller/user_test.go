@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"bytes"
@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/internal/config"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 var userCtrl *UserController
@@ -22,7 +22,7 @@ func init() {
 	params := config.Get(configPath)
 	storage := mysql.InitializeSQL(&params.Db)
 
-	u := &helper.UserHelper{AdminOnly: false, Storage: storage}
+	u := &user.UserHelper{AdminOnly: false, Storage: storage}
 	userCtrl = &UserController{Storage: storage, User: u}
 }
 

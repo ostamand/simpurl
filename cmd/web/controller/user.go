@@ -3,14 +3,14 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/cmd/web/notify"
 	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 type UserController struct {
 	Storage *store.StorageService
-	User    *helper.UserHelper
+	User    *user.UserHelper
 }
 
 func (c *UserController) Signup(w http.ResponseWriter, req *http.Request) {
