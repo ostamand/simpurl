@@ -2,6 +2,7 @@ package controller
 
 import (
 	"io"
+	"net/http"
 	"text/template"
 )
 
@@ -16,4 +17,9 @@ func ShowPage(w io.Writer, data interface{}, pages ...string) {
 	)
 	tmpl := template.Must(template.ParseFiles(pages...))
 	tmpl.Execute(w, data)
+}
+
+func AllowOrigins(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Add("Access-Control-Allow-Headers", "Content-Type, Accept")
 }

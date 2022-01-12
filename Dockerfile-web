@@ -7,7 +7,9 @@ COPY go.* ./
 RUN go mod download
 
 COPY . ./
-RUN go build -v -o server ./cmd/web 
+
+RUN go build -v -o server ./cmd/web
+RUN go build -v -o simpurl ./cmd/cli
 
 FROM debian:buster-slim
 RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -15,6 +17,7 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/server /app/server
+COPY --from=builder /app/simpurl /app/simpurl
 
 COPY ./web /web
 

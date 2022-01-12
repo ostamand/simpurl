@@ -7,6 +7,7 @@ import (
 	"os"
 
 	ctrl "github.com/ostamand/simpurl/cmd/web/controller"
+	"github.com/ostamand/simpurl/cmd/web/controller/api"
 	"github.com/ostamand/simpurl/cmd/web/session"
 	"github.com/ostamand/simpurl/internal/config"
 	"github.com/ostamand/simpurl/internal/store/mysql"
@@ -56,6 +57,10 @@ func main() {
 	}
 	http.HandleFunc("/link/create", l.Create)
 	http.HandleFunc("/link", l.List)
+
+	// api
+	linkAPI := api.LinkController{Storage: s, User: userHelper}
+	http.HandleFunc("/api/links/create", linkAPI.Create)
 
 	// file server
 	fileServer := http.FileServer(http.Dir("./web/static/"))

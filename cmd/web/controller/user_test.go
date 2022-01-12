@@ -12,9 +12,14 @@ import (
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
 	"github.com/ostamand/simpurl/internal/user"
+	"github.com/ostamand/simpurl/test"
 )
 
 var userCtrl *UserController
+
+type signinResponse struct {
+	Token string
+}
 
 func init() {
 	wd, _ := os.Getwd()
@@ -22,11 +27,11 @@ func init() {
 	params := config.Get(configPath)
 	storage := mysql.InitializeSQL(&params.Db)
 
-	u := &user.UserHelper{AdminOnly: false, Storage: storage}
+	u := &user.UserHelper{AdminOnly: false, Storage: storage, Session: &test.SessionMock{}}
 	userCtrl = &UserController{Storage: storage, User: u}
 }
 
-func sendSigninRequest(username string, password string) (*http.Response, SigninResponse) {
+func sendSigninRequest(username string, password string) (*http.Response, signinResponse) {
 	dataRequest := SigninRequest{
 		Username: username,
 		Password: password,
@@ -34,14 +39,15 @@ func sendSigninRequest(username string, password string) (*http.Response, Signin
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(dataRequest)
 
-	req, _ := http.NewRequest(http.MethodPost, "/api/signin", b)
+	req, _ := http.NewRequest(http.MethodPost, "/signin", b)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 	w := httptest.NewRecorder()
 
 	userCtrl.Signin(w, req)
 
 	resp := w.Result()
-	dataResponse := SigninResponse{}
+	dataResponse := signinResponse{}
 	json.NewDecoder(w.Body).Decode(&dataResponse)
 
 	return resp, dataResponse

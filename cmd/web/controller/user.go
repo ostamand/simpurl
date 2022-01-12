@@ -1,12 +1,19 @@
 package controller
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/ostamand/simpurl/cmd/web/notify"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/user"
 )
+
+type SigninRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
 type UserController struct {
 	Storage *store.StorageService
@@ -41,41 +48,72 @@ func (c *UserController) Signout(w http.ResponseWriter, req *http.Request) {
 }
 
 func (c *UserController) Signin(w http.ResponseWriter, req *http.Request) {
+	AllowOrigins(&w)
+
 	switch req.Method {
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
+		return
 	case http.MethodGet:
 		data := CreateViewData(req, nil)
 		ShowPage(w, data, "signin.page.html")
 	case http.MethodPost:
-		if err := req.ParseForm(); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+		jsonRequest := req.Header.Get("Content-Type") == "application/json"
+		jsonResponse := req.Header.Get("Accept") == "application/json"
 
-		username := req.FormValue("username")
-		password := req.FormValue("password")
+		var password, username string
+		if jsonRequest{
+			request := SigninRequest{}
+			body, _ := ioutil.ReadAll(req.Body)
+			defer req.Body.Close()
+
+			_ = json.Unmarshal(body, &request)
+
+			username = request.Username
+			password = request.Password
+		} else {
+			if err := req.ParseForm(); err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			username = req.FormValue("username")
+			password = req.FormValue("password")
+		}
 
 		// check password
 		u, err := c.User.VerifyPassword(username, password)
-		if err != nil {
-			url := notify.AddNotificationToURL("/signin", notify.NotifyWrongPassword)
-			http.Redirect(w, req, url, http.StatusSeeOther)
-			return
+		if err != nil || (c.User.AdminOnly && !u.Admin) {
+			if jsonResponse {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			} else {
+				url := notify.AddNotificationToURL("/signin", notify.NotifyWrongPassword)
+				http.Redirect(w, req, url, http.StatusSeeOther)
+				return
+			}
 		}
 
 		// create session token
-		_, err = c.User.CreateSession(w, u.ID)
+		session, err := c.User.CreateSession(w, u.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			// TODO redirect to signin
 			return
 		}
 
-		// go back to home for now
-		http.Redirect(
-			w,
-			req,
-			notify.AddNotificationToURL("/home", notify.NotifySignedIn),
-			http.StatusSeeOther,
-		)
+		if jsonResponse {
+			data := struct {
+				Token string `json:"token"`
+			}{
+				Token: session.Token,
+			}
+			json.NewEncoder(w).Encode(data)
+		} else {
+			http.Redirect(
+				w,
+				req,
+				notify.AddNotificationToURL("/home", notify.NotifySignedIn),
+				http.StatusSeeOther,
+			)
+		}
 	}
 }

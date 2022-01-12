@@ -36,6 +36,7 @@ func InitializeSQL(params *config.ParamsDB) *store.StorageService {
 
 	log.Printf("connecting to: %s\n", dataSourceName)
 	db, err := sql.Open("mysql", dataSourceName)
+
 	if err != nil {
 		log.Fatal(err)
 	}
