@@ -7,13 +7,13 @@ import (
 	"strings"
 
 	ctrl "github.com/ostamand/simpurl/cmd/web/controller"
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/internal/store"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 type Handler struct {
 	Storage *store.StorageService
-	User    *helper.UserHelper
+	User    *user.UserHelper
 }
 
 func (h *Handler) home(w http.ResponseWriter, req *http.Request) {

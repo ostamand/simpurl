@@ -1,10 +1,11 @@
-package helper
+package user
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/ostamand/simpurl/cmd/web/notify"
+	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,7 +13,7 @@ import (
 type UserHelper struct {
 	AdminOnly bool
 	Storage   *store.StorageService
-	Session   SessionClient
+	Session   session.SessionClient
 }
 
 func (h *UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) (*store.UserModel, bool) {

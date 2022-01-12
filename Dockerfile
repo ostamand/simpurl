@@ -1,4 +1,3 @@
-# from: https://github.com/GoogleCloudPlatform/golang-samples/blob/main/run/helloworld/Dockerfile
 FROM golang:1.17.5-buster
 
 WORKDIR /app
@@ -13,4 +12,6 @@ ENV CONFIG_FILE=${config_file}
 COPY ./${config_file} .
 
 RUN go build -o server ./cmd/web
+RUN go build -o simpurl ./cmd/cli
+
 CMD ["/app/server"]

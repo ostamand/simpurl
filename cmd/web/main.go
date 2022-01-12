@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/ostamand/simpurl/cmd/web/api"
 	ctrl "github.com/ostamand/simpurl/cmd/web/controller"
-	"github.com/ostamand/simpurl/cmd/web/helper"
+	"github.com/ostamand/simpurl/cmd/web/controller/api"
+	"github.com/ostamand/simpurl/cmd/web/session"
 	"github.com/ostamand/simpurl/internal/config"
 	"github.com/ostamand/simpurl/internal/store/mysql"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 func main() {
@@ -26,9 +27,9 @@ func main() {
 
 	// helpers
 	s := mysql.InitializeSQL(&params.Db)
-	userHelper := &helper.UserHelper{
+	userHelper := &user.UserHelper{
 		AdminOnly: params.General.AdminOnly,
-		Session:   &helper.SessionHTTP{},
+		Session:   &session.SessionHTTP{},
 		Storage:   s,
 	}
 
@@ -58,8 +59,8 @@ func main() {
 	http.HandleFunc("/link", l.List)
 
 	// api
-	userAPI := api.UserController{Storage: s, User: userHelper}
-	http.HandleFunc("/api/signin", userAPI.Signin)
+	linkAPI := api.LinkController{Storage: s, User: userHelper}
+	http.HandleFunc("/api/links/create", linkAPI.Create)
 
 	// file server
 	fileServer := http.FileServer(http.Dir("./web/static/"))

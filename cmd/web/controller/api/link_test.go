@@ -9,10 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ostamand/simpurl/cmd/web/helper"
 	"github.com/ostamand/simpurl/internal/config"
+	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
+	"github.com/ostamand/simpurl/internal/user"
 )
 
 var linkCtrl *LinkController
@@ -23,7 +24,7 @@ func init() {
 	params := config.Get(configPath)
 	storage := mysql.InitializeSQL(&params.Db)
 
-	u := &helper.UserHelper{AdminOnly: false, Storage: storage}
+	u := &user.UserHelper{AdminOnly: false, Storage: storage}
 	linkCtrl = &LinkController{Storage: storage, User: u}
 }
 
@@ -52,23 +53,23 @@ func createUserAndSession() (*store.UserModel, *store.SessionModel) {
 		Password: "password",
 		Admin:    false,
 	}
-	userCtrl.Storage.User.Save(u)
-	u, _ = userCtrl.Storage.User.GetByUsername(u.Username)
+	linkCtrl.Storage.User.Save(u)
+	u, _ = linkCtrl.Storage.User.GetByUsername(u.Username)
 
-	token, expires := helper.GenerateToken()
+	token, expires := session.GenerateToken()
 	session := &store.SessionModel{
 		UserID:    u.ID,
 		Token:     token,
 		CreatedAt: time.Now(),
 		ExpiryAt:  expires,
 	}
-	userCtrl.Storage.Session.Save(session)
+	linkCtrl.Storage.Session.Save(session)
 	return u, session
 }
 
 func cleanupUserAndSession(username string, token string) {
-	userCtrl.Storage.User.DeleteFromUsername(username)
-	userCtrl.Storage.Session.DeleteFromToken(token)
+	linkCtrl.Storage.User.DeleteFromUsername(username)
+	linkCtrl.Storage.Session.DeleteFromToken(token)
 }
 
 func TestCreateNoToken(t *testing.T) {
@@ -86,8 +87,8 @@ func TestCreateNoToken(t *testing.T) {
 
 func TestCreateNoSession(t *testing.T) {
 	u, session := createUserAndSession()
-	userCtrl.Storage.Session.DeleteFromToken(session.Token)
-	defer func() { userCtrl.Storage.User.DeleteFromUsername(u.Username) }()
+	linkCtrl.Storage.Session.DeleteFromToken(session.Token)
+	defer func() { linkCtrl.Storage.User.DeleteFromUsername(u.Username) }()
 
 	l := &store.LinkModel{}
 	resp := sendRequest(session.Token, l)
@@ -107,7 +108,7 @@ func TestCreateWithSession(t *testing.T) {
 		Description: "Robots on Google",
 		Note:        "Run!",
 	}
-	defer func() { userCtrl.Storage.Link.DeleteByURL(l.URL) }()
+	defer func() { linkCtrl.Storage.Link.DeleteByURL(l.URL) }()
 	resp := sendRequest(session.Token, l)
 
 	if resp.StatusCode != http.StatusOK {

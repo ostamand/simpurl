@@ -3,3 +3,4 @@ env.sh
 prd.sh
 db/seed.sql
 config_prd.json
+simpurl

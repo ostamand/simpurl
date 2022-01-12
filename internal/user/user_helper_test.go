@@ -1,39 +1,16 @@
-package helper
+package user
 
 import (
-	"errors"
 	"net/http"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/ostamand/simpurl/internal/config"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
+	"github.com/ostamand/simpurl/test"
 	"github.com/stretchr/testify/assert"
 )
-
-type SessionMock struct {
-	Token string
-}
-
-func (s *SessionMock) Save(http.ResponseWriter) (string, time.Time) {
-	sessionToken, expires := GenerateToken()
-	s.Token = sessionToken
-	return sessionToken, expires
-}
-
-func (s *SessionMock) Get(*http.Request) (string, error) {
-	var err error = nil
-	if s.Token == "" {
-		err = errors.New("No session saved")
-	}
-	return s.Token, err
-}
-
-func (s *SessionMock) Clear(http.ResponseWriter) {
-	s.Token = ""
-}
 
 var storage *store.StorageService
 
@@ -48,7 +25,7 @@ func TestAdminNoAccess(t *testing.T) {
 	h := UserHelper{
 		AdminOnly: true,
 		Storage:   storage,
-		Session:   &SessionMock{},
+		Session:   &test.SessionMock{},
 	}
 
 	u := &store.UserModel{
