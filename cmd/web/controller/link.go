@@ -20,7 +20,7 @@ func (c *LinkController) List(w http.ResponseWriter, req *http.Request) {
 		if !ok {
 			return
 		}
-		links, _ := c.Storage.Link.GetAll(u)
+		links, _ := c.Storage.Link.GetAll(u.ID)
 		viewData := CreateViewData(req, u)
 		data := struct {
 			*ViewData
