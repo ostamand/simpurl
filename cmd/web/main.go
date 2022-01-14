@@ -60,7 +60,9 @@ func main() {
 
 	// api
 	linkAPI := api.LinkController{Storage: s, User: userHelper}
+
 	http.HandleFunc("/api/links/create", linkAPI.Create)
+	http.HandleFunc("/api/links", linkAPI.List)
 
 	// file server
 	fileServer := http.FileServer(http.Dir("./web/static/"))
@@ -72,5 +74,6 @@ func main() {
 		port = "8000"
 		log.Printf("defaulting to port %s", port)
 	}
+	
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

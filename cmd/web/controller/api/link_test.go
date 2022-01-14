@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -113,5 +114,51 @@ func TestCreateWithSession(t *testing.T) {
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("User with active session, should get 200")
+	}
+}
+
+func TestCanGetLinks(t *testing.T) {
+	storage := linkCtrl.Storage
+
+	u, session := createUserAndSession()
+	defer cleanupUserAndSession(u.Username, session.Token)
+
+	l1 := &store.LinkModel{
+		UserID: u.ID,
+		URL: "https://test1.com",
+	}
+	storage.Link.Save(l1)
+	defer func() {storage.Link.DeleteByURL(l1.URL)}()
+
+	l2 := &store.LinkModel{
+		UserID: u.ID,
+		URL: "https://test1.com",
+	}
+	storage.Link.Save(l2)
+	defer func() {storage.Link.DeleteByURL(l2.URL)}()
+
+	request := ListRequest {
+		Token: session.Token,
+		Limit: -1,
+	}
+	b, _ := json.Marshal(request)
+	req, _ := http.NewRequest(http.MethodPost, "/api/links", bytes.NewReader(b))
+	w := httptest.NewRecorder()
+
+	linkCtrl.List(w, req)
+	resp := w.Result()
+
+	if(resp.StatusCode != http.StatusOK) {
+		t.Errorf("Should get status code 200")
+	}
+
+	defer req.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	response := ListResponse{}
+	_ = json.Unmarshal(body, &response)
+
+	if(len(response.Links) != 2) {
+		t.Errorf("Should be getting two links baclk")
 	}
 }

@@ -12,7 +12,7 @@ type linkSQL struct {
 	db *sql.DB
 }
 
-func (storage *linkSQL) GetAll(u *store.UserModel) (*[]store.LinkModel, error) {
+func (storage *linkSQL) GetAll(userID int) (*[]store.LinkModel, error) {
 	var links []store.LinkModel
 
 	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE user_id = ?"
@@ -20,11 +20,11 @@ func (storage *linkSQL) GetAll(u *store.UserModel) (*[]store.LinkModel, error) {
 	stmt, _ := storage.db.Prepare(query)
 	defer stmt.Close()
 
-	rows, _ := stmt.Query(u.ID)
+	rows, _ := stmt.Query(userID)
 	defer rows.Close()
 
 	for rows.Next() {
-		l := store.LinkModel{UserID: u.ID}
+		l := store.LinkModel{UserID: userID}
 		rows.Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.Note, &l.CreatedAt)
 		links = append(links, l)
 	}
