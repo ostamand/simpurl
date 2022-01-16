@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
+	"math/rand"
 
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/mgutz/ansi"
 	"github.com/ostamand/simpurl/internal/config"
 	"github.com/ostamand/simpurl/internal/store"
@@ -48,14 +49,18 @@ Do not run this on the production environment.
 		u, _ := s.User.GetByUsername("admin")
 
 		// save 10 links for admin
-		for i :=1; i <=10; i++ {
+		for i :=1; i <=20; i++ {
+			symbol := ""
+			if rand.Intn(100) > 80 {
+				symbol = gofakeit.Word()
+			}
 			s.Link.Save(
 				&store.LinkModel{
 					UserID: u.ID,
-					Symbol: fmt.Sprintf("symbol_%d", i),
-					URL: fmt.Sprintf("https://example_%d.com", i),
-					Description: fmt.Sprintf("description_%d", i),
-					Note: fmt.Sprintf("note_%d", i), 
+					Symbol: symbol,
+					URL: gofakeit.URL(),
+					Description: gofakeit.SentenceSimple(),
+					Note: gofakeit.Sentence(12), 
 				},
 			)
 		}
