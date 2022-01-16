@@ -29,7 +29,7 @@ func (c *LinkController) List(w http.ResponseWriter, req *http.Request) {
 			viewData,
 			links,
 		}
-		ShowPage(w, data, "link/list.page.html")
+		ShowPage(w, data, "link/list.page.gohtml")
 	}
 }
 

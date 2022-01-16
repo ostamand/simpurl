@@ -1,0 +1,24 @@
+.hide {
+  display: none;
+}
+
+.overlay {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 100%;
+  background-color: #2B1773;
+  overflow-x: hidden;
+  transition: 0.5s;
+  border: 1px solid black;
+}
+
+.overlay-open {
+  left: 50%;
+}
+
+tr.row-selected {
+  background-color: red;
+}

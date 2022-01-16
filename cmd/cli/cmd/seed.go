@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mgutz/ansi"
@@ -43,6 +44,21 @@ Do not run this on the production environment.
 				Admin: false,
 			},
 		)
+
+		u, _ := s.User.GetByUsername("admin")
+
+		// save 10 links for admin
+		for i :=1; i <=10; i++ {
+			s.Link.Save(
+				&store.LinkModel{
+					UserID: u.ID,
+					Symbol: fmt.Sprintf("symbol_%d", i),
+					URL: fmt.Sprintf("https://example_%d.com", i),
+					Description: fmt.Sprintf("description_%d", i),
+					Note: fmt.Sprintf("note_%d", i), 
+				},
+			)
+		}
 
 		phosphorize := ansi.ColorFunc("green+h:black")
 		log.Println(phosphorize("Database seeded"))
