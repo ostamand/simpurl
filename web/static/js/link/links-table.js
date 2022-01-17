@@ -31,8 +31,10 @@ export default class LinksTable {
   }
 
   closeOverlay() {
-    this.overlay.classList.remove("overlay-open");
-    this.removeRowHighlight();
+    if (this.overlay.classList.contains("overlay-open")) {
+      this.overlay.classList.remove("overlay-open");
+      this.removeRowHighlight();
+    }
   }
 
   openOverlay() {

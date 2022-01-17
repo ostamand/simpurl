@@ -1,26 +1,25 @@
- body {
-   background-color:#00030D;
-   color: whitesmoke;
-   min-height: 100%;
-}
-
-main {
-   padding-top: 2em;
+body {
+  background-color: #00030d;
+  color: whitesmoke;
 }
 
 .btn-primary {
-  background-color: #2B1773;
-  border-color: #2B1773;
+  background-color: #2b1773;
+  border-color: #2b1773;
 }
 
 /* to change button hover color */
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
-  background-color: #0C0F40;
-  border-color: #0C0F40;
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: #0c0f40;
+  border-color: #0c0f40;
 }
 
 .labelText {
-  color: #00030D;
+  color: #00030d;
 }
 
 .form-signin {
@@ -58,26 +57,27 @@ main {
 }
 
 .bi {
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
   fill: currentColor;
 }
 
 .header {
-  background: #2B1773
+  background: #2b1773;
 }
 
-a.table-link:link, a.table-link:visited {
-  color:#85858b
+a.table-link:link,
+a.table-link:visited {
+  color: #85858b;
 }
 
 a.table-link:hover {
-  color:#2B26BF
+  color: #2b26bf;
 }
 
-.row-condensed{
+.row-condensed {
   font-size: 14px;
 }
 
-.column-url{
+.column-url {
   max-width: 300px;
 }
