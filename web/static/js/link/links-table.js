@@ -1,14 +1,16 @@
 export default class LinksTable {
   constructor(containerSelector) {
     this.container = document.querySelector(containerSelector);
-    this.overlay = document.querySelector("#overlay-details")
+    this.overlay = document.querySelector("#overlay-details");
 
     this.headers = ["URL", "Description", "Symbol"];
+
     this.url = "http://localhost:8001";
 
     this.data = null;
     this.selectedRow = null;
     this.table = null;
+    this.filters = {};
   }
 
   _getSessionToken() {
@@ -23,21 +25,33 @@ export default class LinksTable {
   }
 
   removeRowHighlight() {
-    document.querySelector("#table-links tr.table-light")?.classList.remove("table-light")
+    document
+      .querySelector("#table-links tr.table-light")
+      ?.classList.remove("table-light");
   }
 
   closeOverlay() {
-    this.overlay.classList.remove("overlay-open")
-    this.removeRowHighlight()
+    this.overlay.classList.remove("overlay-open");
+    this.removeRowHighlight();
   }
 
   openOverlay() {
-    this.overlay.classList.add("overlay-open")
+    this.overlay.classList.add("overlay-open");
   }
 
-  openHover() {
-    if (!this.selectedRow) {return}
-    window.open(this.selectedRow.firstChild.textContent, "_blank")
+  searchFor(value) {
+    this.filters.search_for = value;
+    this.update();
+  }
+
+  /**
+   * Open the link currently being hovered
+   */
+  openLinkHover() {
+    if (!this.selectedRow) {
+      return;
+    }
+    window.open(this.selectedRow.firstChild.textContent, "_blank");
   }
 
   /**
@@ -47,8 +61,8 @@ export default class LinksTable {
     this.container.innerHTML = "";
 
     const table = document.createElement("table");
-    table.classList.add("table", "table-dark", "table-hover");
-    table.id = "table-links"
+    table.classList.add("table", "table-dark", "table-hover", "align-middle");
+    table.id = "table-links";
 
     // create table header
     let header = "<thead><tr>";
@@ -57,7 +71,7 @@ export default class LinksTable {
     });
     table.insertAdjacentHTML("beforeend", header);
 
-    const body = document.createElement("tbody")
+    const body = document.createElement("tbody");
 
     // create each row
     this.data.links.forEach((link) => {
@@ -66,25 +80,26 @@ export default class LinksTable {
       // manage row clicking
       row.addEventListener("click", (event) => {
         // check if same row already selected
-        if(event.currentTarget.classList.contains("table-light")) {
-          this.closeOverlay()
-          return
+        if (event.currentTarget.classList.contains("table-light")) {
+          this.closeOverlay();
+          return;
         }
-        this.removeRowHighlight()
-        event.currentTarget.classList.add("table-light")
-        this.openOverlay()
-      })
+        this.removeRowHighlight();
+        event.currentTarget.classList.add("table-light");
+        this.openOverlay();
+      });
 
-      row.addEventListener("mouseenter", event => {
-        this.selectedRow = event.currentTarget
-      })
+      row.addEventListener("mouseenter", () => {
+        this.selectedRow = event.currentTarget;
+      });
 
-      row.addEventListener("mouseleave", event => {
-        this.selectedRow = null
-      })
+      row.addEventListener("mouseleave", () => {
+        this.selectedRow = null;
+      });
 
       let content = "";
       this.headers.forEach((header) => {
+        row.setAttribute(`data-${header}`, link[header]);
         content += `<td>${link[header]}</td>`;
       });
 
@@ -93,15 +108,35 @@ export default class LinksTable {
       body.appendChild(row);
     });
 
-    table.appendChild(body)
+    table.appendChild(body);
     this.container.appendChild(table);
-    this.table = table
+    this.table = table;
   }
 
   /**
    * Update table render based on active filters
    */
-  update() {}
+  update() {
+    this.table.lastChild.childNodes.forEach((row) => {
+      const dataset = row.dataset;
+      let cond = true;
+
+      if ("search_for" in this.filters) {
+        let searchContent = "";
+        Object.keys(dataset).forEach((key) => {
+          searchContent += " " + dataset[key];
+        });
+        cond = cond && searchContent.includes(this.filters["search_for"]);
+      }
+
+      // set visibility of row based on final cond value
+      if (cond) {
+        row.classList.remove("hide");
+      } else {
+        row.classList.add("hide");
+      }
+    });
+  }
 
   /**
    * Get data from API

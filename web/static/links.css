@@ -18,7 +18,3 @@
 .overlay-open {
   left: 50%;
 }
-
-tr.row-selected {
-  background-color: red;
-}
