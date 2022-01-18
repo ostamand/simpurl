@@ -8,30 +8,72 @@
 
 {{define "main"}}
 
-<div class="overlay" id="overlay-details">
-    <div class="container">
-        <button id="btn-overlay-close">Close</button>
-        <h1>"Fever" T-shirt</h1>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-        It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with
-        desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+<div class="container overlay" id="overlay-details">
+  <form>
+    <div class="row">
+      <div class="col">
+        <button class="btn overlay-btn mt-2 btn-primary" id="btn-overlay-close">
+          Close
+        </button>
+      </div>
     </div>
-</div>
 
-<div class="container">
+    <div class="mt-2 row">
+      <h2>
+        <a id="overlay-title" class="text-white" href="https://www.google.com/">
+          centralorchestrate.io/e-business
+        </a>
+      </h2>
+    </div>
 
-    <div class="row mb-2">
-        <div class="col-2" > 
-            <input id="input-search" type="text" class="form-control" placeholder="Search for">
-        </div>
+    <div class="row mt-2">
+      <div class="col">
+        <input
+          class="form-control"
+          type="text"
+          placeholder="A light horde softly fight a world wisely."
+        />
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <label class="col-2 col-form-label">Quick URL</label>
+      <div class="col-10">
+        <input type="text" class="form-control" />
+      </div>
     </div>
 
     <div class="row">
-        <div class="col">
-            <div id="container-links" class="table-responsive-md"></div>
-        </div>
+      <label class="col-2 col-form-label">Notes</label>
     </div>
 
+    <div class="row">
+      <div class="col">
+        <textarea class="form-control" rows="5"></textarea>
+      </div>
+    </div>
+
+    <button class="w-100 overlay-btn btn btn-primary mt-2">Save</button>
+  </form>
+</div>
+
+<div class="container">
+  <div class="row mb-2">
+    <div class="col-2">
+      <input
+        id="input-search"
+        type="text"
+        class="form-control"
+        placeholder="Search for"
+      />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div id="container-links" class="table-responsive-md"></div>
+    </div>
+  </div>
 </div>
 
 <script type="module" src="/static/js/link/list.js"></script>
