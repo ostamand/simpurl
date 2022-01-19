@@ -1,10 +1,14 @@
 import TableOverlay from "./overlay-table.js";
+import { formatURL } from "./../helpers.js";
 
 export default class LinksTable {
   constructor(containerSelector) {
     this.container = document.querySelector(containerSelector);
 
     this.headers = ["URL", "Description", "Symbol"];
+    this.formatHeaders = {
+      URL: formatURL,
+    };
 
     this.url = "http://localhost:8001";
 
@@ -109,7 +113,13 @@ export default class LinksTable {
       let content = "";
       this.headers.forEach((header) => {
         row.setAttribute(`data-${header}`, link[header]); // used by the search
-        content += `<td>${link[header]}</td>`;
+
+        // apply formatting if necessary
+        let text = link[header];
+        if (header in this.formatHeaders) {
+          text = this.formatHeaders[header](text);
+        }
+        content += `<td>${text}</td>`;
       });
       row.setAttribute("data-id", link.ID); // id used when showing the overlay
 
