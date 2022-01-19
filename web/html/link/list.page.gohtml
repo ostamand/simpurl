@@ -12,7 +12,11 @@
   <form>
     <div class="row">
       <div class="col">
-        <button class="btn overlay-btn mt-2 btn-primary" id="btn-overlay-close">
+        <button
+          class="btn overlay-btn mt-2 btn-primary"
+          id="btn-overlay-close"
+          type="button"
+        >
           Close
         </button>
       </div>
@@ -20,9 +24,7 @@
 
     <div class="mt-2 row">
       <h2>
-        <a id="overlay-title" class="text-white" href="https://www.google.com/">
-          centralorchestrate.io/e-business
-        </a>
+        <a id="overlay-title" class="text-white" target="_blank"> </a>
       </h2>
     </div>
 
@@ -31,6 +33,7 @@
         <input
           class="form-control"
           type="text"
+          id="overlay-description"
           placeholder="A light horde softly fight a world wisely."
         />
       </div>
@@ -39,7 +42,12 @@
     <div class="row mt-2">
       <label class="col-2 col-form-label">Quick URL</label>
       <div class="col-10">
-        <input type="text" class="form-control" />
+        <input
+          type="text"
+          placeholder="simpurl/quick-url"
+          class="form-control"
+          id="overlay-symbol"
+        />
       </div>
     </div>
 
@@ -49,11 +57,13 @@
 
     <div class="row">
       <div class="col">
-        <textarea class="form-control" rows="5"></textarea>
+        <textarea class="form-control" rows="5" id="overlay-note"></textarea>
       </div>
     </div>
 
-    <button class="w-100 overlay-btn btn btn-primary mt-2">Save</button>
+    <button class="w-100 overlay-btn btn btn-primary mt-2" type="button">
+      Update
+    </button>
   </form>
 </div>
 

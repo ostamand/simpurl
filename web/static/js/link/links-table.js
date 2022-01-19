@@ -1,7 +1,8 @@
+import TableOverlay from "./overlay-table.js";
+
 export default class LinksTable {
   constructor(containerSelector) {
     this.container = document.querySelector(containerSelector);
-    this.overlay = document.querySelector("#overlay-details");
 
     this.headers = ["URL", "Description", "Symbol"];
 
@@ -11,6 +12,15 @@ export default class LinksTable {
     this.selectedRow = null;
     this.table = null;
     this.filters = {};
+
+    this.overlay = new TableOverlay();
+    this.overlay.onClose(() => this.removeRowHighlight());
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key == "o") {
+        this.openLinkHover();
+      }
+    });
   }
 
   _getSessionToken() {
@@ -28,17 +38,6 @@ export default class LinksTable {
     document
       .querySelector("#table-links tr.table-light")
       ?.classList.remove("table-light");
-  }
-
-  closeOverlay() {
-    if (this.overlay.classList.contains("overlay-open")) {
-      this.overlay.classList.remove("overlay-open");
-      this.removeRowHighlight();
-    }
-  }
-
-  openOverlay() {
-    this.overlay.classList.add("overlay-open");
   }
 
   searchFor(value) {
@@ -81,17 +80,25 @@ export default class LinksTable {
 
       // manage row clicking
       row.addEventListener("click", (event) => {
+        const target = event.currentTarget;
         // check if same row already selected
-        if (event.currentTarget.classList.contains("table-light")) {
-          this.closeOverlay();
+        if (target.classList.contains("table-light")) {
+          this.removeRowHighlight();
+          this.overlay.close();
           return;
         }
         this.removeRowHighlight();
-        event.currentTarget.classList.add("table-light");
-        this.openOverlay();
+        target.classList.add("table-light");
+
+        // find what to display by id
+        const link = this.data.links.find(
+          (link) => link.ID === Number.parseInt(target.dataset.id)
+        );
+        this.overlay.display(link);
+        this.overlay.open();
       });
 
-      row.addEventListener("mouseenter", () => {
+      row.addEventListener("mouseenter", (event) => {
         this.selectedRow = event.currentTarget;
       });
 
@@ -101,9 +108,10 @@ export default class LinksTable {
 
       let content = "";
       this.headers.forEach((header) => {
-        row.setAttribute(`data-${header}`, link[header]);
+        row.setAttribute(`data-${header}`, link[header]); // used by the search
         content += `<td>${link[header]}</td>`;
       });
+      row.setAttribute("data-id", link.ID); // id used when showing the overlay
 
       row.innerHTML = content;
 
