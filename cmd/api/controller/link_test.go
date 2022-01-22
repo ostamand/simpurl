@@ -1,4 +1,4 @@
-package api
+package controller
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -29,7 +30,7 @@ func init() {
 	linkCtrl = &LinkController{Storage: storage, User: u}
 }
 
-func sendRequest(sessionToken string, l *store.LinkModel) *http.Response {
+func sendCreateRequest(sessionToken string, l *store.LinkModel) *http.Response {
 	dataRequest := CreateRequest{
 		Token:       sessionToken,
 		Symbol:      l.Symbol,
@@ -79,7 +80,7 @@ func TestCreateNoToken(t *testing.T) {
 	defer cleanupUserAndSession(u.Username, session.Token)
 
 	l := &store.LinkModel{}
-	resp := sendRequest("", l)
+	resp := sendCreateRequest("", l)
 
 	if resp.StatusCode != http.StatusUnauthorized {
 		t.Error("No session token provided, should get a 401")
@@ -92,7 +93,7 @@ func TestCreateNoSession(t *testing.T) {
 	defer func() { linkCtrl.Storage.User.DeleteFromUsername(u.Username) }()
 
 	l := &store.LinkModel{}
-	resp := sendRequest(session.Token, l)
+	resp := sendCreateRequest(session.Token, l)
 
 	if resp.StatusCode != http.StatusUnauthorized {
 		t.Error("No session exists for that user, should get a 401")
@@ -110,10 +111,74 @@ func TestCreateWithSession(t *testing.T) {
 		Note:        "Run!",
 	}
 	defer func() { linkCtrl.Storage.Link.DeleteByURL(l.URL) }()
-	resp := sendRequest(session.Token, l)
+	resp := sendCreateRequest(session.Token, l)
 
 	if resp.StatusCode != http.StatusOK {
 		t.Error("User with active session, should get 200")
+	}
+}
+
+func TestCanGetRedirect(t *testing.T) {
+	storage := linkCtrl.Storage
+
+	u, session := createUserAndSession()
+	defer cleanupUserAndSession(u.Username, session.Token)
+
+	l1 := &store.LinkModel{
+		UserID: u.ID,
+		URL: "https://test1.com",
+		Symbol: "test1",
+	}
+	storage.Link.Save(l1)
+	defer func() {storage.Link.DeleteByURL(l1.URL)}()
+
+	sendRequest := func(symbol string, token string ) (RedirectResponse, int) {
+		request := RedirectRequest {
+			Token: token,
+			Symbol: symbol,
+		}
+		b, _ := json.Marshal(request)
+		req, _ := http.NewRequest(http.MethodPost, "/api/links/redirect", bytes.NewReader(b))
+		w := httptest.NewRecorder()
+		linkCtrl.Redirect(w, req)
+		resp := w.Result()
+		defer req.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		response := RedirectResponse{}
+		_ = json.Unmarshal(body, &response)
+		return response, resp.StatusCode
+	}
+
+	// Request is OK
+
+	response, statusCode := sendRequest(l1.Symbol, session.Token)
+
+	if statusCode!= http.StatusOK {
+		t.Errorf("Should get status code 200")
+	}
+
+	if strings.Compare(response.URL, l1.URL) != 0 {{
+		t.Errorf("Should get proper URL from symbol")
+	}}
+
+	// Wrong session token
+
+	response, statusCode = sendRequest(l1.Symbol, "notgood")
+
+	if statusCode != http.StatusUnauthorized {
+		t.Errorf("Should be getting a 401")
+	}
+
+	if response.URL != "" {
+		t.Errorf("Should not be getting the URL")
+	}
+
+	// Symbol does not exists
+
+	response, statusCode = sendRequest("notgood", session.Token)
+
+	if statusCode != http.StatusNotFound {
+		t.Errorf("Should be getting a 404")
 	}
 }
 

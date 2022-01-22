@@ -1,11 +1,10 @@
-package api
+package controller
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ostamand/simpurl/cmd/web/controller"
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/user"
 )
@@ -15,26 +14,8 @@ type LinkController struct {
 	User    *user.UserHelper
 }
 
-type CreateRequest struct {
-	Token       string `json:"token"`
-	Symbol      string `json:"symbol"`
-	URL         string `json:"url"`
-	Description string `json:"description"`
-	Note        string `json:"note"`
-}
-
-type ListRequest struct {
-	Token       string 	`json:"token"`
-	Limit		int 	`json:"limit"`
-}
-
-type ListResponse struct {
-	Count int `json:"count"`
-	Links []store.LinkModel `json:"links"`
-}
-
 func allowPostRequest(w *http.ResponseWriter, req *http.Request) bool {
-	controller.AllowOrigins(w)
+	AllowOrigins(w)
 
 	if req.Method == http.MethodOptions {
 		(*w).WriteHeader(http.StatusOK)
@@ -55,7 +36,41 @@ func (c *LinkController) getUser(token string) (*store.UserModel, bool) {
 	return u, true
 }
 
-// TODO support filters
+// TODO: a lot of duplicate code. should be able to extract a lot of it. Ok for now.
+
+func (c *LinkController) Redirect(w http.ResponseWriter, req *http.Request) {
+	if ok := allowPostRequest(&w, req); !ok {
+		return
+	}
+
+	defer req.Body.Close()
+	body, _ := ioutil.ReadAll(req.Body)
+
+	request := RedirectRequest{}
+	_ = json.Unmarshal(body, &request)
+
+	u, ok := c.getUser(request.Token)
+	if !ok {
+		//TODO: fix http: superfluous response.WriteHeader call
+		w.WriteHeader(http.StatusUnauthorized)
+		return 
+	}
+
+	var l *store.LinkModel
+	var err error
+	if l, err = c.Storage.Link.FindBySymbol(u.ID, request.Symbol); err != nil {
+		// TODO: check if we get err when not found
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	response := RedirectResponse {
+		URL: l.URL,
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
+
+// TODO: support filters
 func (c *LinkController) List(w http.ResponseWriter, req *http.Request) {
 	if ok := allowPostRequest(&w, req); !ok {
 		return 
@@ -69,6 +84,7 @@ func (c *LinkController) List(w http.ResponseWriter, req *http.Request) {
 
 	u, ok := c.getUser(request.Token)
 	if !ok {
+		//TODO: fix http: superfluous response.WriteHeader call
 		w.WriteHeader(http.StatusUnauthorized)
 		return 
 	}

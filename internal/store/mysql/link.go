@@ -31,10 +31,10 @@ func (storage *linkSQL) GetAll(userID int) (*[]store.LinkModel, error) {
 	return &links, rows.Err()
 }
 
-func (storage *linkSQL) FindBySymbol(symbol string) (*store.LinkModel, error) {
+func (storage *linkSQL) FindBySymbol(userID int, symbol string) (*store.LinkModel, error) {
 	var l store.LinkModel
-	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE symbol = ?"
-	err := storage.db.QueryRow(query, symbol).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.Note, &l.CreatedAt)
+	query := "SELECT id, symbol, url, description, note, created_at FROM links WHERE symbol = ? AND user_id = ?"
+	err := storage.db.QueryRow(query, symbol, userID).Scan(&l.ID, &l.Symbol, &l.URL, &l.Description, &l.Note, &l.CreatedAt)
 	return &l, err
 }
 

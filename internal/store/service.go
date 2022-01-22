@@ -7,7 +7,7 @@ import "time"
 type LinkStorage interface {
 	DeleteByURL(url string) error
 	GetAll(userID int) (*[]LinkModel, error)
-	FindBySymbol(symbol string) (*LinkModel, error)
+	FindBySymbol(userID int, symbol string) (*LinkModel, error)
 	Save(l *LinkModel) error
 }
 
