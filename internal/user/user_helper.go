@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ostamand/simpurl/cmd/web/notify"
 	"github.com/ostamand/simpurl/internal/session"
 	"github.com/ostamand/simpurl/internal/store"
 	"golang.org/x/crypto/bcrypt"
@@ -13,37 +12,10 @@ import (
 type UserHelper struct {
 	AdminOnly bool
 	Storage   *store.StorageService
-	Session   session.SessionClient
-}
-
-func (h *UserHelper) HasAccess(w http.ResponseWriter, req *http.Request, redirect string) (*store.UserModel, bool) {
-	u := h.GetFromSession(req)
-	adminOnly := h.AdminOnly && !u.Admin
-	if !u.Authenticated() || adminOnly {
-		var url string
-		if adminOnly {
-			url = notify.AddNotificationToURL(redirect, notify.NotifyInDev)
-		} else {
-			url = notify.AddNotificationToURL(redirect, notify.NotifyNotSignedIn)
-		}
-		if w != nil {
-			http.Redirect(w, req, url, http.StatusSeeOther)
-		}
-		return nil, false
-	}
-	return u, true
-}
-
-func (h *UserHelper) GetFromSession(req *http.Request) *store.UserModel {
-	user := &store.UserModel{}
-	if c, err := h.Session.Get(req); err == nil {
-		user, _ = h.Storage.User.GetBySession(c)
-	}
-	return user
 }
 
 func (h *UserHelper) CreateSession(w http.ResponseWriter, userID int) (*store.SessionModel, error) {
-	sessionToken, expires := h.Session.Save(w)
+	sessionToken, expires := session.GenerateToken()
 	session := store.SessionModel{
 		UserID:    userID,
 		Token:     sessionToken,

@@ -12,7 +12,6 @@ import (
 	"github.com/ostamand/simpurl/internal/store"
 	"github.com/ostamand/simpurl/internal/store/mysql"
 	"github.com/ostamand/simpurl/internal/user"
-	"github.com/ostamand/simpurl/test"
 )
 
 var userCtrl *UserController
@@ -27,7 +26,7 @@ func init() {
 	params := config.Get(configPath)
 	storage := mysql.InitializeSQL(&params.Db)
 
-	u := &user.UserHelper{AdminOnly: false, Storage: storage, Session: &test.SessionMock{}}
+	u := &user.UserHelper{AdminOnly: false, Storage: storage}
 	userCtrl = &UserController{Storage: storage, User: u}
 }
 

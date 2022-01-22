@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -v -o server ./cmd/web
+RUN go build -v -o server ./cmd/api
 RUN go build -v -o simpurl ./cmd/cli
 
 FROM debian:buster-slim
@@ -18,8 +18,6 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 
 COPY --from=builder /app/server /app/server
 COPY --from=builder /app/simpurl /app/simpurl
-
-COPY ./web /web
 
 ARG config_file 
 ENV CONFIG_FILE=${config_file}
