@@ -1,0 +1,22 @@
+{
+  "name": "simpurl-web",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ostamand/simpurl-web.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ostamand/simpurl-web/issues"
+  },
+  "homepage": "https://github.com/ostamand/simpurl-web#readme",
+  "dependencies": {
+    "lit": "^2.1.1",
+    "parcel": "^2.2.1"
+  }
+}

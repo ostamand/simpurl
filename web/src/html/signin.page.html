@@ -1,0 +1,32 @@
+{{template "base" .}}
+
+
+{{define "head"}}
+{{ end }}
+
+
+{{define "title"}}Sign In{{end}}
+
+{{define "main"}}
+<div class="form-signin">
+    <form method="POST" action="/signin">
+      <h1 class="h3 mb-3 fw-normal">Sign in</h1>
+  
+      <div class="form-floating mb-3">
+        <input type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
+        <label class="labelText">Username</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label class="labelText">Password</label>
+      </div>
+  
+<!--       <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div> -->
+      <button class="w-100 btn btn-lg btn-primary" type="submit" value="submit">Sign in</button>
+    </form>
+</div>
+{{end}}

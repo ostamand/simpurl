@@ -1,0 +1,35 @@
+{{template "base" .}}
+
+{{define "head"}}
+{{ end }}
+
+{{define "title"}}Links{{end}}
+
+{{define "main"}}
+<form class="form-links" method="POST", action="/link/create">
+    <h1 class="h3 mb-3 fw-normal">Create Link</h1>
+    <div class="mb-3">
+      <label class="form-label">URL</label>
+      <input type="text" name="url" class="form-control">
+      <div class="form-text">What URL do you want to save? https://...</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <input type="text" name="description" class="form-control">
+      <div class="form-text">Quick one line description</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Shortcut</label>
+      <input type="text" name="symbol" class="form-control", placeholder="(Optional)">
+      <div class="form-text">Make this URL available at simplurl.com/shortcut</div>
+    </div>
+    <div class="mb-3 form-label">
+        <label class="form-label">Note</label>
+        <div class="input-group">
+            <textarea class="form-control" name="note" placeholder="(Optional)" ></textarea>
+        </div>
+        <div class="form-text">Anything you would like to save along</div>
+    </div>
+    <button type="submit" class="w-100 btn btn-lg btn-primary">Submit</button>
+  </form>
+{{end}}
