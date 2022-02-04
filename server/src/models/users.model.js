@@ -59,8 +59,13 @@ async function validateUser(username, password) {
   return null;
 }
 
+function userToObject(user) {
+  return (({ _id, email, username }) => ({ id: _id, email, username }))(user);
+}
+
 module.exports = {
   createUser,
   validateUser,
   getUserByID,
+  userToObject,
 };
