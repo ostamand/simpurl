@@ -5,12 +5,12 @@ export default class TableURL {
   constructor(containerSelector) {
     this.container = document.querySelector(containerSelector);
 
-    this.headers = ["URL", "Description", "Symbol"];
+    this.headers = ["url", "description", "symbol"];
     this.formatHeaders = {
       URL: formatURL,
     };
 
-    this.url = "http://localhost:8001";
+    this.url = "http://localhost:3000"; // TODO get from configs
 
     this.data = null;
     this.selectedRow = null;
@@ -65,7 +65,7 @@ export default class TableURL {
     document.querySelector("#close-new-link").click();
   }
 
-  _createRow(link) {
+  _createRow(url) {
     const row = document.createElement("tr");
 
     // manage row clicking
@@ -81,10 +81,10 @@ export default class TableURL {
       target.classList.add("table-light");
 
       // find what to display by id
-      const link = this.data.links.find(
-        (link) => link.ID === Number.parseInt(target.dataset.id)
+      const url = this.data.find(
+        (x) => x.urlID === Number.parseInt(target.dataset.id)
       );
-      this.overlay.display(link);
+      this.overlay.display(url);
       this.overlay.open();
     });
 
@@ -98,16 +98,16 @@ export default class TableURL {
 
     let content = "";
     this.headers.forEach((header) => {
-      row.setAttribute(`data-${header}`, link[header]); // used by the search
+      row.setAttribute(`data-${header}`, url[header]); // used by the search
 
       // apply formatting if necessary
-      let text = link[header];
+      let text = url[header];
       if (header in this.formatHeaders) {
         text = this.formatHeaders[header](text);
       }
       content += `<td>${text}</td>`;
     });
-    row.setAttribute("data-id", link.ID); // id used when showing the overlay
+    row.setAttribute("data-id", url.urlID); // id used when showing the overlay
 
     row.innerHTML = content;
 
@@ -134,7 +134,7 @@ export default class TableURL {
     const body = document.createElement("tbody");
 
     // create each row
-    this.data.links.forEach((link) => {
+    this.data.forEach((link) => {
       const row = this._createRow(link);
       body.appendChild(row);
     });
@@ -175,13 +175,9 @@ export default class TableURL {
    */
   async _getData() {
     const limit = -1;
-    const response = await fetch(this.url + "/links", {
+    const response = await fetch(this.url + "/urls", {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
     });
     if (response.status != 200) {
       // assuming session token is no good anymore

@@ -18,13 +18,6 @@ async function startServer() {
   //console.log(process.env)
   await mongoose.connect(process.env.MONGO_URL);
 
-  /*
-    const newUrl = new Url({path: faker.internet.url()})
-    newUrl.save().then(() => {
-        console.log("URL saved")
-    })
-  */
-
   // start server
   const server = http.createServer(app);
   server.listen(PORT, () => {

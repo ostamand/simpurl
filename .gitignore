@@ -2,5 +2,9 @@ node_modules
 .env
 .prettierrc
 .vscode
+public
+.parcel-cache
+dist
+.DS_store
 
 scratch

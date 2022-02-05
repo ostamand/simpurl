@@ -1,3 +1,5 @@
-export default configs = {
-  apiEndpoint: "http://localhost:8001",
+export { configs as default };
+
+const configs = {
+  apiEndpoint: "http://localhost:3000",
 };

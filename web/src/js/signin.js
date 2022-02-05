@@ -45,7 +45,6 @@ async function signin() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
       body: JSON.stringify({
         username: usernameInput.value,
@@ -62,8 +61,8 @@ async function signin() {
     const data = await response.json();
 
     // set or update local storage
-    window.localStorage.setItem("username", usernameInput.value);
-    window.localStorage.setItem("session", data.token);
+    window.localStorage.setItem("username", data.username);
+    window.localStorage.setItem("email", data.email);
 
     window.location.replace("/");
   } catch (error) {
