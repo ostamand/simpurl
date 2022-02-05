@@ -9,7 +9,7 @@ async function getLastID(userID) {
   if (!lastID) {
     lastID = 0;
   }
-  return lastID;
+  return lastID.urlID;
 }
 
 module.exports = {
