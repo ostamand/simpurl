@@ -5,6 +5,10 @@ const urlSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  urlID: {
+    type: Number,
+    required: true,
+  },
   symbol: {
     type: String,
   },
