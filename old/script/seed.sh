@@ -1,1 +1,0 @@
-docker compose exec server ./simpurl db seed
