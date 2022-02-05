@@ -1,10 +1,26 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const urlSchema = new mongoose.Schema({
-    path: {
-        type: String,
-        required: true,
-    }
-})
+  userID: {
+    type: String,
+    required: true,
+  },
+  symbol: {
+    type: String,
+  },
+  url: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  note: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+  },
+});
 
-module.exports = mongoose.model("Url", urlSchema)
+module.exports = mongoose.model("Url", urlSchema);

@@ -31,7 +31,7 @@ function validatePassword(password, hash) {
  * @param {String} data.username
  * @param {String} data.password
  */
-async function createUser(data) {
+async function saveUser(data) {
   const hash = await hashPassword(data.password);
   data.hashedPassword = hash;
   let user = new User(data);
@@ -64,7 +64,7 @@ function userToObject(user) {
 }
 
 module.exports = {
-  createUser,
+  createUser: saveUser,
   validateUser,
   getUserByID,
   userToObject,

@@ -1,8 +1,8 @@
-express = require("express")
-const { addURL } = require("../controllers/urls");
+express = require("express");
+const { createUrl } = require("../controllers/urls");
 
 const urlsRouter = express.Router();
 
-urlsRouter.post("/", addURL)
+urlsRouter.post("/", createUrl);
 
-module.exports = urlsRouter
+module.exports = urlsRouter;

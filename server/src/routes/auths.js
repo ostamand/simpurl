@@ -3,7 +3,11 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
 const { httpCreateNewUser } = require("../controllers/auths");
-const { validateUser, getUserByID } = require("../models/users.model");
+const {
+  validateUser,
+  getUserByID,
+  userToObject,
+} = require("../models/users.model");
 
 const router = express.Router();
 
@@ -18,6 +22,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
+  console.log({ id: user._id });
   done(null, { id: user._id });
 });
 
@@ -32,9 +37,7 @@ passport.deserializeUser(async (userData, done) => {
 router.post("/signup", httpCreateNewUser);
 
 router.post("/signin", passport.authenticate("local"), (req, res) => {
-  return res
-    .status(200)
-    .json((({ username, email }) => ({ username, email }))(req.user));
+  return res.status(200).json(userToObject(req.user));
 });
 
 module.exports = router;
