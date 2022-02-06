@@ -64,7 +64,7 @@ function userToObject(user) {
 }
 
 module.exports = {
-  createUser: saveUser,
+  saveUser,
   validateUser,
   getUserByID,
   userToObject,

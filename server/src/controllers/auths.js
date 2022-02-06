@@ -1,7 +1,7 @@
-const { createUser, userToObject } = require("../models/users.model");
+const { saveUser, userToObject } = require("../models/users.model");
 
 async function httpCreateNewUser(req, res) {
-  const { user, err } = await createUser(req.body);
+  const { user, err } = await saveUser(req.body);
   if (err) {
     return res.status(500);
   }

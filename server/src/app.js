@@ -12,6 +12,8 @@ const { checkLoggedIn } = require("./controllers/auths");
 
 const app = express();
 
+//TODO put api under /api
+
 // middlewares
 app.use(cors({"origin": "http://localhost:1234", credentials: true})) //! this is for dev
 app.use(express.json());
