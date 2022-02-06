@@ -1,6 +1,6 @@
 import TableOverlay from "./table-overlay.js";
 import { formatURL } from "../helpers.js";
-import configs from "../defaults.js"
+import configs from "../defaults.js";
 
 export default class TableURL {
   constructor(containerSelector) {
@@ -50,7 +50,7 @@ export default class TableURL {
   }
 
   addLink(link) {
-    this.data.links.push(link);
+    this.data.push(link);
     // TODO: add check if table defined
     const body = document.querySelector("#table-links tbody");
     const row = this._createRow(link);

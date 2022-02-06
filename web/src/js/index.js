@@ -15,11 +15,10 @@ async function saveLink() {
     .forEach((input) => {
       request[input.name] = input.value;
     });
-  request["token"] = window.localStorage.getItem("session");
-  const [status, data] = await API.post("/links/create", request);
+  const [status, data] = await API.post("/urls", request);
   if (status === 200) {
     // add to the table
-    table.addLink(data.links[0]);
+    table.addLink(data);
   } else {
     // TODO: display error
   }

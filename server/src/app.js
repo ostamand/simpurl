@@ -1,18 +1,29 @@
-const cors = require("cors");
-const path = require('path');
+const path = require("path");
 const express = require("express");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 
 const redirectRouter = require("./routes/redirect");
-const apiRouter = require("./routes/api")
+const apiRouter = require("./routes/api");
 
 const { checkLoggedIn } = require("./controllers/auths");
 
+require("dotenv").config();
+
 const app = express();
 
-// middlewares
-app.use(cors({"origin": "http://localhost:1234, https://shorturl-w723ubjq4a-uk.a.run.app", credentials: true})) //! this is for dev
+//middlewares
+app.use((req, res, next) => {
+  const allowedOrigins = process.env.CORS.split(",").map((s) => s.trim());
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Credentials", true);
+  return next();
+});
+
 app.use(express.json());
 app.use(
   cookieSession({
@@ -25,9 +36,9 @@ app.use(
 app.use(passport.authenticate("session"));
 
 // routes
-app.use("/api", apiRouter)
+app.use("/api", apiRouter);
 
-app.use(express.static(path.join(__dirname, "..", "public")))
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use("/", redirectRouter);
 

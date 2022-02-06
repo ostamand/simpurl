@@ -64,7 +64,7 @@ async function signin() {
     window.localStorage.setItem("username", data.username);
     window.localStorage.setItem("email", data.email);
 
-    window.location.replace("/");
+    window.location.replace("/index.html");
   } catch (error) {
     // TODO: add alert for user
     console.log(error);
