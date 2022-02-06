@@ -1,5 +1,6 @@
 import TableOverlay from "./table-overlay.js";
 import { formatURL } from "../helpers.js";
+import configs from "../defaults.js"
 
 export default class TableURL {
   constructor(containerSelector) {
@@ -10,7 +11,7 @@ export default class TableURL {
       URL: formatURL,
     };
 
-    this.url = "http://localhost:3000"; // TODO get from configs
+    this.url = configs.apiEndpoint; // TODO get from configs
 
     this.data = null;
     this.selectedRow = null;

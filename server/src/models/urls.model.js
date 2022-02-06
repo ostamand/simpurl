@@ -5,11 +5,11 @@ async function getAllURLs(userID) {}
 async function getLastID(userID) {
   let lastID = await Url.findOne({ userID: userID }, "urlID")
     .sort("-urlID")
-    .exec();
+    .exec().urlID;
   if (!lastID) {
     lastID = 0;
   }
-  return lastID.urlID;
+  return lastID;
 }
 
 module.exports = {

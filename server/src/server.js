@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = require("./app");
-const Url = require("./models/urls.mongo");
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,11 +12,7 @@ mongoose.connection.on("error", (err) => {
 });
 
 async function startServer() {
-  // test saving stuff to the db
-  //console.log(process.env)
   await mongoose.connect(process.env.MONGO_URL);
-
-  // start server
   const server = http.createServer(app);
   server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}...`);
