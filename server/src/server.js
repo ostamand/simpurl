@@ -1,6 +1,5 @@
 const http = require("http");
 const mongoose = require("mongoose");
-const { faker } = require("@faker-js/faker");
 
 require("dotenv").config();
 

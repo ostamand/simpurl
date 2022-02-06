@@ -29,8 +29,12 @@ app.use(passport.authenticate("session"));
 app.use("/", authRouter);
 app.use("/urls", urlRouter);
 
-app.get("/ping", checkLoggedIn, (_, res) => {
+app.get("/ping", (_, res) => {
   return res.status(200).json({ message: "pong" });
+});
+
+app.get("/ping-secure", checkLoggedIn, (_, res) => {
+  return res.status(200).json({ message: "still pong but secured this time" });
 });
 
 app.use(express.static(path.join(__dirname, "..", "public")))

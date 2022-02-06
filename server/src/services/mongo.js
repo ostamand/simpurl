@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 mongoose.connection.once("connected", () => {
-  console.log("Connected to MongoDB");
+  console.log(`Connected to MongoDB: ${process.env.MONGO_URL}`);
 });
 
 mongoose.connection.on("error", (err) => {

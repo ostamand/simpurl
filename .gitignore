@@ -6,3 +6,7 @@ public
 .parcel-cache
 dist
 .DS_store
+.env
+cloudbuild.yaml
+deploy.sh
+prd.env
