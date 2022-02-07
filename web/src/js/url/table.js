@@ -87,6 +87,7 @@ export default class TableURL {
       const url = this.data.find(
         (x) => x.urlID === Number.parseInt(target.dataset.id)
       );
+
       this.overlay.display(url);
       this.overlay.open();
     });
@@ -178,9 +179,7 @@ export default class TableURL {
    */
   async _getData() {
     const limit = -1;
-    console.log(API.url + "/urls");
     const [status, data] = await API.get("/urls");
-
     if (status != 200) {
       // assuming session token is no good anymore
       // TODO: fix this because can be something else

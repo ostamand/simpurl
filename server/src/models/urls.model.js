@@ -3,11 +3,12 @@ const Url = require("./urls.mongo");
 async function getAllURLs(userID) {}
 
 async function getLastID(userID) {
-  let lastID = await Url.findOne({ userID: userID }, "urlID")
+  let lastID = 0;
+  let url = await Url.findOne({ userID: userID }, "urlID")
     .sort("-urlID")
-    .exec().urlID;
-  if (!lastID) {
-    lastID = 0;
+    .exec();
+  if (url) {
+    lastID = url.urlID;
   }
   return lastID;
 }
