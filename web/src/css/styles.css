@@ -1,0 +1,83 @@
+body {
+  background-color: #00030d;
+  color: whitesmoke;
+}
+
+.btn-primary {
+  background-color: #2b1773;
+  border-color: #2b1773;
+}
+
+/* to change button hover color */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-color: #0c0f40;
+  border-color: #0c0f40;
+}
+
+.labelText {
+  color: #00030d;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-links {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.bi {
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+
+.header {
+  background: #2b1773;
+}
+
+a.table-link:link,
+a.table-link:visited {
+  color: #85858b;
+}
+
+a.table-link:hover {
+  color: #2b26bf;
+}
+
+.row-condensed {
+  font-size: 14px;
+}
+
+.column-url {
+  max-width: 300px;
+}

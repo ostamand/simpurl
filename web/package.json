@@ -1,0 +1,19 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "lit": "^2.1.2"
+  },
+  "scripts": {
+    "start": "npx parcel src/*.html",
+    "build": "npx parcel build --no-cache src/*.html; rm -f ../server/public/*; cp dist/* ../server/public",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.2.1"
+  }
+}

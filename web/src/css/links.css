@@ -1,0 +1,41 @@
+.hide {
+  display: none;
+}
+
+.overlay {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 100%;
+  /*   left: 50%; */
+  background-color: #2b1773;
+  overflow-x: hidden;
+  transition: 0.5s;
+
+  border-top-left-radius: 20px;
+  border-left: 1px solid #00030d;
+}
+
+.overlay-open {
+  left: 50%;
+}
+
+#table-links {
+  font-size: 0.85em;
+}
+
+.overlay-btn {
+  background-color: #0c0f40;
+  border-color: #0c0f40;
+}
+
+#overlay-title:link,
+#overlay-title:visited {
+  text-decoration: none;
+}
+
+#overlay-title:hover {
+  text-decoration: underline;
+}

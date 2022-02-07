@@ -1,0 +1,25 @@
+{
+  "name": "simpurl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-web": "npm run build --prefix web",
+    "setup": "npm install --production --prefix web  && npm install --production --prefix server",
+    "build-start": "npm run build --prefix web && npm start --prefix server",
+    "start-server": "npm start --prefix server",
+    "deploy": "./deploy.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ostamand/simpurl.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ostamand/simpurl/issues"
+  },
+  "homepage": "https://github.com/ostamand/simpurl#readme"
+}
