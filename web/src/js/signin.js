@@ -1,8 +1,9 @@
-import configs from "./defaults.js";
+import getConfigs from "./defaults.js";
 
 const usernameInput = document.querySelector("#input-username");
 const passwordInput = document.querySelector("#input-password");
 const main = document.querySelector("main");
+const configs = getConfigs();
 
 const displayAlert = (type, message) => {
   const alert = document.querySelector("#alert");

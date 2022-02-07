@@ -4,14 +4,17 @@ export default class FetchWrapper {
   }
 
   async _sendRequest(path, method, body) {
-    const response = await fetch(this.url + path, {
+    const options = {
       method: method,
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
-    });
+    };
+    if (body) {
+      options["body"] = JSON.stringify(body);
+    }
+    const response = await fetch(this.url + path, options);
     let data = {};
     try {
       data = await response.json();
@@ -26,6 +29,6 @@ export default class FetchWrapper {
   }
 
   get(path) {
-    return this._sendRequest(path, "GET", {});
+    return this._sendRequest(path, "GET", null);
   }
 }

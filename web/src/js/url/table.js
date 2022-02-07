@@ -1,6 +1,10 @@
 import TableOverlay from "./table-overlay.js";
 import { formatURL } from "../helpers.js";
-import configs from "../defaults.js";
+import getConfigs from "../defaults.js";
+import FetchWrapper from "../common/fetch-wrapper.js";
+
+const configs = getConfigs();
+const API = new FetchWrapper(configs.apiEndpoint);
 
 export default class TableURL {
   constructor(containerSelector) {
@@ -10,8 +14,6 @@ export default class TableURL {
     this.formatHeaders = {
       URL: formatURL,
     };
-
-    this.url = configs.apiEndpoint; // TODO get from configs
 
     this.data = null;
     this.selectedRow = null;
@@ -176,17 +178,16 @@ export default class TableURL {
    */
   async _getData() {
     const limit = -1;
-    const response = await fetch(this.url + "/urls", {
-      method: "GET",
-      credentials: "include",
-    });
-    if (response.status != 200) {
+    console.log(API.url + "/urls");
+    const [status, data] = await API.get("/urls");
+
+    if (status != 200) {
       // assuming session token is no good anymore
       // TODO: fix this because can be something else
       window.location.replace("/signin.html");
       return;
     }
-    this.data = await response.json();
+    this.data = data;
     this.render();
   }
 }
