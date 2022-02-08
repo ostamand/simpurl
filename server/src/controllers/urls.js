@@ -50,9 +50,29 @@ async function getAllUrls(req, res) {
   return res.status(500).json({ message: "Internal error." });
 }
 
+async function updateUrl(req, res) {
+  const data = req.body;
+  try {
+    const url = await Url.findOneAndUpdate(
+      { urlID: req.params.id, userID: req.user.id },
+      data,
+      {
+        new: true,
+      }
+    );
+    if (url) {
+      return res.status(200).json(modelToObject(url));
+    }
+    return res.status(404).json({ message: "URL no found." });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal error." });
+  }
+}
+
 module.exports = {
   getUrl,
   createUrl,
   deleteUrl,
   getAllUrls,
+  updateUrl,
 };
