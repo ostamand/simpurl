@@ -1,10 +1,14 @@
 import { formatURL } from "../helpers.js";
+import FetchWrapper from "../common/fetch-wrapper.js";
+
+const API = new FetchWrapper();
 
 export default class TableOverlay {
   constructor() {
     this.overlay = document.querySelector("#overlay-details");
     this.closeCallbacks = [];
     this.link = null;
+    this.updateCb = null;
 
     this.title = document.querySelector("#overlay-title");
     this.description = document.querySelector("#overlay-description");
@@ -15,6 +19,12 @@ export default class TableOverlay {
       .querySelector("#btn-overlay-close")
       .addEventListener("click", () => {
         this.close();
+      });
+
+    document
+      .querySelector("#btn-overlay-update")
+      .addEventListener("click", () => {
+        this.update();
       });
 
     document.addEventListener("keyup", (event) => {
@@ -31,12 +41,28 @@ export default class TableOverlay {
     this.title.setAttribute("href", link.url);
 
     this.description.value = link.description;
+    this.symbol.value = link.symbol;
+    // TODO: not available -> this.note.textContent =
+  }
 
-    if (link.Symbol) {
-      this.symbol.value = `simpurl/${link.symbol}`;
+  async update() {
+    const data = {
+      description: this.description.value,
+      symbol: this.symbol.value,
+    };
+    const [status, _] = await API.patch(`/urls/${this.link.urlID}`, data);
+    console.log(status);
+
+    if (status != 200) {
+      // TODO: display error
+      return;
     }
 
-    // TODO: not available -> this.note.textContent =
+    // update table & overlay data
+    for (const field in data) {
+      this.link[field] = data[field];
+    }
+    this.updateCb(this.link);
   }
 
   close() {
@@ -50,5 +76,9 @@ export default class TableOverlay {
 
   onClose(f) {
     this.closeCallbacks.push(f);
+  }
+
+  onUpdate(f) {
+    this.updateCb = f;
   }
 }

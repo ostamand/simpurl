@@ -1,9 +1,13 @@
+import getConfigs from "../defaults.js";
+
+const apiEndpoint = getConfigs().apiEndpoint;
+
 export default class FetchWrapper {
-  constructor(url) {
+  constructor(url = apiEndpoint) {
     this.url = url;
   }
 
-  async _sendRequest(path, method, body) {
+  async _sendRequest(endpoint, method, body = null) {
     const options = {
       method: method,
       credentials: "include",
@@ -14,7 +18,7 @@ export default class FetchWrapper {
     if (body) {
       options["body"] = JSON.stringify(body);
     }
-    const response = await fetch(this.url + path, options);
+    const response = await fetch(this.url + endpoint, options);
     let data = {};
     try {
       data = await response.json();
@@ -24,11 +28,15 @@ export default class FetchWrapper {
     return [response.status, data];
   }
 
-  post(path, body) {
-    return this._sendRequest(path, "POST", body);
+  post(endpoint, body) {
+    return this._sendRequest(endpoint, "POST", body);
   }
 
-  get(path) {
-    return this._sendRequest(path, "GET", null);
+  patch(endpoint, body) {
+    return this._sendRequest(endpoint, "PATCH", body);
+  }
+
+  get(endpoint) {
+    return this._sendRequest(endpoint, "GET");
   }
 }
