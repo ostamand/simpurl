@@ -4,6 +4,7 @@ const {
   deleteUrl,
   getUrl,
   getAllUrls,
+  updateUrl,
 } = require("../controllers/urls");
 const { checkLoggedIn } = require("../controllers/auths");
 
@@ -13,5 +14,6 @@ urlsRouter.get("/", checkLoggedIn, getAllUrls);
 urlsRouter.get("/:id", checkLoggedIn, getUrl);
 urlsRouter.post("/", checkLoggedIn, createUrl);
 urlsRouter.delete("/:id", checkLoggedIn, deleteUrl);
+urlsRouter.patch("/:id", checkLoggedIn, updateUrl);
 
 module.exports = urlsRouter;

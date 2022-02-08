@@ -69,7 +69,26 @@ export default class TableURL {
   }
 
   _createRow(url) {
+    // function to create row content.
+    // needed for update callback on overlay
+    const applyToRow = (url, row) => {
+      let content = "";
+      this.headers.forEach((header) => {
+        row.setAttribute(`data-${header}`, url[header]); // used by the search
+        // apply formatting if necessary
+        let text = url[header];
+        if (header in this.formatHeaders) {
+          text = this.formatHeaders[header](text);
+        }
+        content += `<td>${text}</td>`;
+      });
+      row.setAttribute("data-id", url.urlID); // id used when showing the overlay
+      row.innerHTML = content;
+    };
+
     const row = document.createElement("tr");
+
+    applyToRow(url, row);
 
     // manage row clicking
     row.addEventListener("click", (event) => {
@@ -90,6 +109,11 @@ export default class TableURL {
 
       this.overlay.display(url);
       this.overlay.open();
+
+      // add callback in case overlay needs to update this table row
+      this.overlay.onUpdate((url) => {
+        applyToRow(url, row);
+      });
     });
 
     row.addEventListener("mouseenter", (event) => {
@@ -99,21 +123,6 @@ export default class TableURL {
     row.addEventListener("mouseleave", () => {
       this.selectedRow = null;
     });
-
-    let content = "";
-    this.headers.forEach((header) => {
-      row.setAttribute(`data-${header}`, url[header]); // used by the search
-
-      // apply formatting if necessary
-      let text = url[header];
-      if (header in this.formatHeaders) {
-        text = this.formatHeaders[header](text);
-      }
-      content += `<td>${text}</td>`;
-    });
-    row.setAttribute("data-id", url.urlID); // id used when showing the overlay
-
-    row.innerHTML = content;
 
     return row;
   }
