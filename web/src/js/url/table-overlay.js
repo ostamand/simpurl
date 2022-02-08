@@ -6,9 +6,11 @@ const API = new FetchWrapper();
 export default class TableOverlay {
   constructor() {
     this.overlay = document.querySelector("#overlay-details");
-    this.closeCallbacks = [];
+    this.closeCallbacks = []; //? rename this to be consistent with other callbacks?
     this.link = null;
+
     this.updateCb = null;
+    this.deleteCb = null;
 
     this.title = document.querySelector("#overlay-title");
     this.description = document.querySelector("#overlay-description");
@@ -25,6 +27,12 @@ export default class TableOverlay {
       .querySelector("#btn-overlay-update")
       .addEventListener("click", () => {
         this.update();
+      });
+
+    document
+      .querySelector("#btn-overlay-delete")
+      .addEventListener("click", () => {
+        this.delete();
       });
 
     document.addEventListener("keyup", (event) => {
@@ -68,6 +76,15 @@ export default class TableOverlay {
     this.updateCb(this.link);
   }
 
+  async delete() {
+    // delete from the db
+    // remove from the table
+    // close overlay
+    const [status, _] = await API.delete(`/urls/${this.link.urlID}`);
+    this.deleteCb();
+    this.close();
+  }
+
   close() {
     this.overlay.classList.remove("start-50");
     this.closeCallbacks.forEach((f) => f());
@@ -83,5 +100,9 @@ export default class TableOverlay {
 
   onUpdate(f) {
     this.updateCb = f;
+  }
+
+  onDelete(f) {
+    this.deleteCb = f;
   }
 }

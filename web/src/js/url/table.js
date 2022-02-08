@@ -1,10 +1,8 @@
 import TableOverlay from "./table-overlay.js";
 import { formatURL } from "../helpers.js";
-import getConfigs from "../defaults.js";
 import FetchWrapper from "../common/fetch-wrapper.js";
 
-const configs = getConfigs();
-const API = new FetchWrapper(configs.apiEndpoint);
+const API = new FetchWrapper();
 
 export default class TableURL {
   constructor(containerSelector) {
@@ -113,6 +111,10 @@ export default class TableURL {
       // add callback in case overlay needs to update this table row
       this.overlay.onUpdate((url) => {
         applyToRow(url, row);
+      });
+
+      this.overlay.onDelete(() => {
+        this.table.lastChild.removeChild(row);
       });
     });
 

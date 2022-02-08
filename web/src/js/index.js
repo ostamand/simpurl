@@ -1,13 +1,11 @@
 import TableURL from "./url/table.js";
 import SigninElement from "./component/signin-toolbar.js";
 import FetchWrapper from "./common/fetch-wrapper.js";
-import getConfigs from "./defaults.js";
 
 customElements.define("signin-btn", SigninElement);
 
 const table = new TableURL("#container-links");
-const configs = getConfigs();
-const API = new FetchWrapper(configs.apiEndpoint);
+const API = new FetchWrapper();
 
 async function saveLink() {
   const request = {};

@@ -39,4 +39,8 @@ export default class FetchWrapper {
   get(endpoint) {
     return this._sendRequest(endpoint, "GET");
   }
+
+  delete(endpoint) {
+    return this._sendRequest(endpoint, "DELETE");
+  }
 }
