@@ -34,7 +34,7 @@ export default class TableOverlay {
     });
   }
 
-  display(link) {
+  async display(link) {
     this.link = link;
 
     this.title.textContent = formatURL(link.url);
@@ -42,22 +42,25 @@ export default class TableOverlay {
 
     this.description.value = link.description;
     this.symbol.value = link.symbol;
-    // TODO: not available -> this.note.textContent =
+
+    // all the other fields could be gotten from the data
+    const [status, url] = await API.get(`/urls/${this.link.urlID}`);
+    if (status === 200) {
+      this.note.value = url.note;
+    }
   }
 
   async update() {
     const data = {
       description: this.description.value,
       symbol: this.symbol.value,
+      note: this.note.value,
     };
     const [status, _] = await API.patch(`/urls/${this.link.urlID}`, data);
-    console.log(status);
-
     if (status != 200) {
       // TODO: display error
       return;
     }
-
     // update table & overlay data
     for (const field in data) {
       this.link[field] = data[field];
