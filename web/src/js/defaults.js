@@ -7,7 +7,6 @@ const configs = {
 export default function getConfigs() {
   if (!configs.apiEndpoint) {
     configs.apiEndpoint = window.location.origin + "/api";
-    console.log(`Setting endpoint to: ${configs.apiEndpoint}`);
   }
   return configs;
 }
