@@ -24,15 +24,15 @@ export default class TableOverlay {
       });
 
     document
-      .querySelector("#btn-overlay-update")
-      .addEventListener("click", () => {
-        this.update();
-      });
-
-    document
       .querySelector("#btn-overlay-delete")
       .addEventListener("click", () => {
         this.delete();
+      });
+
+    document
+      .querySelector("#btn-overlay-undo")
+      .addEventListener("click", () => {
+        this.display(this.link);
       });
 
     document.addEventListener("keyup", (event) => {
@@ -58,20 +58,23 @@ export default class TableOverlay {
     }
   }
 
-  async update() {
-    const data = {
+  getCurrentValues() {
+    return {
       description: this.description.value,
       symbol: this.symbol.value,
       note: this.note.value,
     };
-    const [status, _] = await API.patch(`/urls/${this.link.urlID}`, data);
+  }
+
+  async updateWith(values) {
+    const [status, _] = await API.patch(`/urls/${this.link.urlID}`, values);
     if (status != 200) {
       // TODO: display error
       return;
     }
     // update table & overlay data
-    for (const field in data) {
-      this.link[field] = data[field];
+    for (const field in values) {
+      this.link[field] = values[field];
     }
     this.updateCb(this.link);
   }
@@ -85,7 +88,18 @@ export default class TableOverlay {
     this.close();
   }
 
-  close() {
+  /**
+   * Automatically save when closing tab (if needed)
+   */
+  async close() {
+    const currentValues = this.getCurrentValues();
+    let original = true;
+    for (const property in currentValues) {
+      original = original && currentValues[property] === this.link[property];
+    }
+    if (!original) {
+      await this.updateWith(currentValues);
+    }
     this.overlay.classList.remove("start-50");
     this.closeCallbacks.forEach((f) => f());
   }
