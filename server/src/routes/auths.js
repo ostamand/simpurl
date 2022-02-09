@@ -40,4 +40,9 @@ router.post("/signin", passport.authenticate("local"), (req, res) => {
   return res.status(200).json(userToObject(req.user));
 });
 
+router.get("/signout", (req, res) => {
+  req.logout();
+  return res.status(200).json({ message: "Signed out." });
+});
+
 module.exports = router;
