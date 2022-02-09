@@ -1,20 +1,21 @@
 import { LitElement, html } from "lit";
-import { getSessionToken, clearSessionToken } from "../helpers";
+import { isLoggedIn } from "../helpers";
+import FetchWrapper from "../common/fetch-wrapper";
+
+const API = new FetchWrapper();
 
 export default class SigninElement extends LitElement {
   static properties = {
-    session: {},
     username: {},
   };
 
   constructor() {
     super();
-    this.session = getSessionToken();
     this.username = window.localStorage.getItem("username");
   }
 
   render() {
-    if (this.session.length > 0) {
+    if (isLoggedIn()) {
       return html`
         <div class="dropdown">
           <button
@@ -37,12 +38,15 @@ export default class SigninElement extends LitElement {
     `;
   }
 
-  _signout(event) {
-    clearSessionToken();
-    window.localStorage.clear("username");
-    window.localStorage.clear("session");
-    window.localStorage.setItem("alert", "primary;Please sign in.");
-    document.location.replace("/signin.html");
+  async _signout(event) {
+    const [status, _] = await API.get("/signout");
+    if (status === 200) {
+      window.localStorage.clear("username");
+      window.localStorage.setItem("alert", "primary;Please sign in.");
+      document.location.replace("/signin.html");
+    } else {
+      //TODO manage signout errors.
+    }
   }
 
   createRenderRoot() {

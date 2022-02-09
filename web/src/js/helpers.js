@@ -1,20 +1,18 @@
-const sessionToken = "session_token";
+const sessionToken = "session";
 
-export const formatURL = (url) => {
+export function formatURL(url) {
   return url.replace("https://", "").replace("http://", "").replace("www.", "");
-};
+}
 
-export const getSessionToken = () => {
-  let session = "";
-  document.cookie.split(";").forEach((cookie) => {
-    const [key, value] = cookie.trim().split("=");
-    if (key === sessionToken) {
-      session = value;
-    }
+/**
+ * Assume that the user is logged in if the session cookie is found
+ * @returns
+ */
+export function isLoggedIn() {
+  const cookies = document.cookie.split(";").map((text) => {
+    return text.split("=")[0].trim();
   });
-  return session;
-};
-
-export const clearSessionToken = () => {
-  document.cookie = `${sessionToken}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-};
+  return (
+    cookies.includes(sessionToken) && cookies.includes(`${sessionToken}.sig`)
+  );
+}
