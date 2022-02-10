@@ -1,5 +1,6 @@
 import getConfigs from "./defaults.js";
 import AnimateTitle from "./common/animate-title.js";
+import AnimateDots from "./common/animate-dots.js";
 
 const usernameInput = document.querySelector("#input-username");
 const passwordInput = document.querySelector("#input-password");
@@ -11,6 +12,11 @@ const title = new AnimateTitle(
   document.querySelector("#signup-title"),
   "SimpURL"
 ).start();
+
+const submitButton = new AnimateDots(
+  document.querySelector("#submit-btn"),
+  "Sign in"
+);
 
 document.querySelector("#form-signin").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -52,6 +58,8 @@ const init = () => {
 
 async function signin() {
   try {
+    submitButton.start();
+
     const response = await fetch(configs.apiEndpoint + "/signin", {
       method: "POST",
       credentials: "include",
@@ -64,6 +72,7 @@ async function signin() {
       }),
     });
     if (response.status != 200) {
+      submitButton.stop();
       displayAlert("danger", "Wrong! Try again.");
       return;
     }
