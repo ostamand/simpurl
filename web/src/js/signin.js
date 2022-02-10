@@ -1,9 +1,27 @@
 import getConfigs from "./defaults.js";
+import AnimateTitle from "./common/animate-title.js";
+import AnimateDots from "./common/animate-dots.js";
 
 const usernameInput = document.querySelector("#input-username");
 const passwordInput = document.querySelector("#input-password");
 const main = document.querySelector("main");
+
 const configs = getConfigs();
+
+const title = new AnimateTitle(
+  document.querySelector("#signup-title"),
+  "SimpURL"
+).start();
+
+const submitButton = new AnimateDots(
+  document.querySelector("#submit-btn"),
+  "Sign in"
+);
+
+document.querySelector("#form-signin").addEventListener("submit", (event) => {
+  event.preventDefault();
+  signin();
+});
 
 const displayAlert = (type, message) => {
   const alert = document.querySelector("#alert");
@@ -31,7 +49,6 @@ const displayAlert = (type, message) => {
 
 const init = () => {
   const alert = window.localStorage.getItem("alert");
-  console.log(alert);
   if (alert != null) {
     [type, message] = alert.split(";");
     displayAlert(type, message);
@@ -41,6 +58,8 @@ const init = () => {
 
 async function signin() {
   try {
+    submitButton.start();
+
     const response = await fetch(configs.apiEndpoint + "/signin", {
       method: "POST",
       credentials: "include",
@@ -53,9 +72,8 @@ async function signin() {
       }),
     });
     if (response.status != 200) {
-      if (response.status === 401) {
-        displayAlert("danger", "Wrong! Try again.");
-      }
+      submitButton.stop();
+      displayAlert("danger", "Wrong! Try again.");
       return;
     }
     // TODO: change signin so that it returns the expire date
@@ -65,16 +83,14 @@ async function signin() {
     window.localStorage.setItem("username", data.username);
     window.localStorage.setItem("email", data.email);
 
-    window.location.replace("/index.html");
+    title.stop().highlightLastN(3);
+    setTimeout(() => {
+      window.location.replace("/index.html");
+    }, 1500);
   } catch (error) {
     // TODO: add alert for user
     console.log(error);
   }
 }
-
-document.querySelector("#form-signin").addEventListener("submit", (event) => {
-  event.preventDefault();
-  signin();
-});
 
 init();

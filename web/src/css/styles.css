@@ -65,6 +65,15 @@ body {
   background: #2b1773;
 }
 
+a.signup-link:link,
+a.signup-link:visited {
+  color: #85858b;
+}
+
+a.signup-link:hover {
+  color: #2b26bf;
+}
+
 a.table-link:link,
 a.table-link:visited {
   color: #85858b;
@@ -80,4 +89,12 @@ a.table-link:hover {
 
 .column-url {
   max-width: 300px;
+}
+
+span.title-default {
+  transition: color 1s;
+}
+
+span.title-color {
+  color: #2b26bf;
 }
