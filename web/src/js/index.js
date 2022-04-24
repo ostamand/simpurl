@@ -1,8 +1,10 @@
 import TableURL from "./url/table.js";
 import SigninElement from "./component/signin-toolbar.js";
+import TagsToolbar from "./component/tags-toolbar.js";
 import FetchWrapper from "./common/fetch-wrapper.js";
 
 customElements.define("signin-btn", SigninElement);
+customElements.define("tags-toolbar", TagsToolbar);
 
 const table = new TableURL("#container-links");
 const API = new FetchWrapper();
@@ -14,6 +16,9 @@ async function saveLink() {
     .forEach((input) => {
       request[input.name] = input.value;
     });
+
+  //TODO remove and add proper way of tagging new URL
+
   const [status, data] = await API.post("/urls", request);
   if (status === 200) {
     // add to the table

@@ -12,6 +12,9 @@ const urlSchema = new mongoose.Schema({
   symbol: {
     type: String,
   },
+  tags: {
+    type: [String],
+  },
   url: {
     type: String,
     required: true,

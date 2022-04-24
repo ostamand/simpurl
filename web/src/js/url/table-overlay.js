@@ -6,6 +6,8 @@ const API = new FetchWrapper();
 export default class TableOverlay {
   constructor() {
     this.overlay = document.querySelector("#overlay-details");
+    this.tagsToolbar = document.querySelector("#overlay-details tags-toolbar");
+
     this.closeCallbacks = []; //? rename this to be consistent with other callbacks?
     this.link = null;
 
@@ -51,6 +53,8 @@ export default class TableOverlay {
     this.description.value = link.description;
     this.symbol.value = link.symbol;
 
+    this.tagsToolbar.setTags(link.tags);
+
     // all the other fields could be gotten from the data
     const [status, url] = await API.get(`/urls/${this.link.urlID}`);
     if (status === 200) {
@@ -93,11 +97,23 @@ export default class TableOverlay {
    */
   async close() {
     const currentValues = this.getCurrentValues();
+
     let original = true;
     for (const property in currentValues) {
       original = original && currentValues[property] === this.link[property];
     }
+
+    // check if tags changed also
+    this.tagsToolbar.tags.forEach((tag) => {
+      original = original && this.link.tags.includes(tag);
+    });
+    this.link.tags.forEach((tag) => {
+      original = original && this.tagsToolbar.tags.includes(tag);
+    });
+
     if (!original) {
+      console.log("update");
+      currentValues["tags"] = this.tagsToolbar.tags;
       await this.updateWith(currentValues);
     }
     this.overlay.classList.remove("start-50");
