@@ -1,6 +1,7 @@
 const Url = require("../models/urls.mongo");
 const { getLastID } = require("../models/urls.model");
 const { modelToObject } = require("../services/mongo");
+const { addTagIfNeeded } = require("../helpers/tags");
 
 async function createUrl(req, res) {
   const data = req.body;
@@ -16,6 +17,10 @@ async function createUrl(req, res) {
 
   try {
     url = await new Url(data).save();
+
+    // also update user tags in case there is any new one
+    await addTagIfNeeded(req.user.id, data.tags);
+
     return res.status(200).json(modelToObject(url));
   } catch (err) {
     console.error(err);
@@ -24,6 +29,7 @@ async function createUrl(req, res) {
 }
 
 async function deleteUrl(req, res) {
+  //TODO delete orphan tags...
   const id = Number(req.params.id);
   const result = await Url.deleteOne({ userID: req.user.id, urlID: id });
   if (result.deletedCount > 0) {
@@ -61,6 +67,7 @@ async function updateUrl(req, res) {
       }
     );
     if (url) {
+      addTagIfNeeded(req.user.id, url.tags);
       return res.status(200).json(modelToObject(url));
     }
     return res.status(404).json({ message: "URL no found." });
