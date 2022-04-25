@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "npx parcel src/*.html",
-    "build": "npx parcel build --no-cache src/*.html; rm -f ../server/public/*; cp dist/* ../server/public",
+    "build": "npx parcel build --no-cache src/*.html; rm -r -f ../server/public; mkdir ../server/public; cp dist/* ../server/public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
